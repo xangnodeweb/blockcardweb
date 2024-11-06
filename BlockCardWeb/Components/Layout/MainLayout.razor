@@ -1,0 +1,24 @@
+﻿@inherits LayoutComponentBase
+@* Required *@
+<MudThemeProvider />
+<MudPopoverProvider />
+
+@* Needed for dialogs *@
+<MudDialogProvider />
+
+@* Needed for snackbars *@
+<MudSnackbarProvider />
+<div class="page">
+
+    <BlockCardWeb.Components.Pages.ViewMain.CustomViewMain>
+
+        <authorize>
+
+        </authorize>
+        <noauthorize>
+            <BlockCardWeb.Components.Pages.MainSecurity.LoginMain />
+        </noauthorize>
+
+    </BlockCardWeb.Components.Pages.ViewMain.CustomViewMain>
+</div>
+

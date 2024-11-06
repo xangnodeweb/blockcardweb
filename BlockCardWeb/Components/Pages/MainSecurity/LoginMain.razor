@@ -1,0 +1,54 @@
+﻿
+
+<MudPaper Class="w-100 image-bg position-relative bg-login pt-3" Style="  background-color: rgba(255, 255,255, 0.6); height: 100vh;">
+
+    @* <MudImage Src="./image/bg-01.jpg" Class="w-100 position-absolute" Style="top: 0; left:0; height : 100vh;" /> *@
+    <MudGrid Class="my-0 mx-auto w-50 bg-wrap-login d-flex flex-column">
+
+        <MudItem xs="12" Class="pa-0 d-flex flex-column ">
+            <MudCard Class="d-flex justify-content-center align-items-center m-auto" Style="width : 100px; height : 100px; border-radius: 50%; background : #FFFFFF; ">
+                <i class="zmdi zmdi-google-drive f-60-px"> </i>
+            </MudCard>
+            <MudText Class="text-white m-auto"> UVC - BLOCK CARD 2021 </MudText>
+        </MudItem>
+        <MudItem xs="12" Class="pa-0 d-flex flex-column">
+             <MudTextField T="string" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Person" Adornment="@Adornment.Start" Placeholder="USERNAME" />
+             <MudTextField T="string" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Person" Adornment="@Adornment.Start" Placeholder="PASSWORD" />
+
+             <MudButton  Class="w-100 py-3" Style="border-radius : 10px; background: #FFF;"> ເຂົ້າສູ່ລະບົບ  </MudButton>
+        </MudItem>
+    </MudGrid>
+
+    <MudTextField T="string" Variant="Variant.Outlined" />
+
+</MudPaper>
+
+<style>
+
+    .bg-login:before {
+        background-color: rgba(255, 255,255, 0.6);
+    }
+
+    .image-bg {
+        background-image: url(./image/bg-01.jpg);
+    }
+
+    .f-60-px {
+        font-size: 60px;
+    }
+
+    .bg-wrap-login {
+        border-radius: 10px;
+        background: #9152f8;
+        background : -webkit-linear-gradient(top , #00f7ff, #0080cb);
+        background : -o-linear-gradient(top , #3100ff, #b224ef);
+        background : -moz-linear-gradient(top , #7579ff, #b224ef);
+        background : linear-gradient(top , #ac0000, #fffa00);
+        
+    }
+
+</style>
+
+@code {
+
+}
