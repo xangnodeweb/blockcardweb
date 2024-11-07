@@ -1,6 +1,6 @@
 ﻿
 
-<MudPaper Class="w-100 image-bg position-relative bg-login pt-28-px " Style="  background-color: rgba(255, 255,255, 0.6); height: 100vh; padding-bottom : 24px; ">
+<MudPaper Class="w-100 image-bg position-relative bg-login pt-28-px " Style=" height: 100vh; padding-bottom : 24px; ">
 
     @* <MudImage Src="./image/bg-01.jpg" Class="w-100 position-absolute" Style="top: 0; left:0; height : 100vh;" /> *@
 
@@ -13,9 +13,15 @@
             <MudText Class="text-white f-30-px w-295-px text-center" Style=" margin-top : 12px; width : 295px;"> UVC - BLOCK CARD 2021 </MudText>
         </MudCard>
         <MudCard Elevation="0" Class="w-100 bg-none d-flex flex-column align-items-center px-5 mt-2">
-            <MudTextField T="string" Variant="Variant.Text" AdornmentIcon="@Icons.Material.Filled.Person" Adornment="@Adornment.Start" AdornmentColor="Color.Secondary" Placeholder="USERNAME" Class="mb-3 w-100 f-18-px text-white" Style="margin-top : 16px; font-size: 18px; color : #FFF;" />
-            <MudTextField T="string" Variant="Variant.Text" AdornmentIcon="@Icons.Material.Filled.Https" Adornment="@Adornment.Start" Placeholder="PASSWORD" Class="mb-3 w-100 f-18-px text-white" Style=" margin-top : 16px;  font-size: 18px;" />
+            <MudTextField T="string" Variant="Variant.Text" AdornmentIcon="@Icons.Material.Filled.Person" Adornment="@Adornment.Start" AdornmentColor="Color.Secondary" Placeholder="USERNAME" Class="mb-3 f-18-px text-white w-100" Style="margin-top : 16px; font-size: 18px; color : #FFF;" />
+            <MudCard Class="position-relative bg-none d-flex flex-row w-100 align-items-center" Elevation="0">
 
+            <MudTextField T="string" Variant="Variant.Text" AdornmentIcon="@Icons.Material.Filled.Https" Adornment="@Adornment.Start"  Placeholder="PASSWORD" InputType="@passwordinput" Class="mb-3 w-100 f-18-px text-white input-password" Style=" margin-top : 16px;  font-size: 18px;">
+
+
+            </MudTextField>
+                <MudIcon Icon="@passwordinputicon" Class="position-absolute " @onclick="showpassword" Style="right: 0;" />
+            </MudCard>
             <MudButton Class="w-100 h-50-px mt-30-px f-20-px btn-login" Style="border-radius : 25px; "> ເຂົ້າສູ່ລະບົບ  </MudButton>
         </MudCard>
 
@@ -46,8 +52,8 @@
         background-size: cover;
         background-position: center;
         background-image: url(./image/bg-01.jpg);
-        background-color : rgba(255 ,255, 255, 0.6);
-        background-blend-mode : lighten;
+        background-color: rgba(255,255, 255, 0.6);
+        background-blend-mode: lighten;
     }
 
     div.mud-paper.bg-login::before {
@@ -82,22 +88,24 @@
         background: -moz-linear-gradient(top, #7579ff, #b224ef);
         background: linear-gradient(top, #ac0000, #fffa00);
     }
-    .btn-login{
+
+    .btn-login {
         background: #FFF;
     }
-    .btn-login:hover {
-        background: -webkit-linear-gradient(bottom,#04d5fb,#066dbb);
-        color : #FFF;
-        transition : all 0.2s;
-    }
 
-  /*   .pt-40-px {
-        padding-top: 40px;
-    }
+        .btn-login:hover {
+            background: -webkit-linear-gradient(bottom,#04d5fb,#066dbb);
+            color: #FFF;
+            transition: all 0.2s;
+        }
 
-    .pt-28-px {
-        padding-top: 28px;
-    } */
+    /*   .pt-40-px {
+            padding-top: 40px;
+        }
+
+        .pt-28-px {
+            padding-top: 28px;
+        } */
 
     .bg-none {
         background: #FFFFFF00;
@@ -114,11 +122,16 @@
     .mud-icon-root.mud-svg-icon {
         fill: #FFFFFF;
     }
-    .mud-input{
-        color : #FFF;
+
+   div.input-password .mud-input > input.mud-input-root, div.mud-input-slot.mud-input-root{
+       width: 87%;
+    }
+    .mud-input {
+        color: #FFF;
     }
 </style>
 
 @code {
-
+    [Parameter] public RenderFragment StartAdormentfragment { get; set; }
+    [Parameter] public RenderFragment EndAdormentfragment { get; set; }
 }
