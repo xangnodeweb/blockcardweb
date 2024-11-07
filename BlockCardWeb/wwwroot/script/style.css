@@ -1,7 +1,73 @@
 ﻿
-.h-100-vh{
+.h-100-vh {
     height: 100vh;
 }
-.w-60-px{
+
+.h-50-px{
+    height: 50px;
+}
+
+.w-90{
+    width: 90%;
+}
+.w-60-px {
     width: 60px;
+}
+.w-295-px{
+    width: 295px;
+}
+
+
+.f-13-px {
+    font-size: 13px;
+}
+
+.f-18-px{
+    font-size: 18px;
+}
+
+.f-20-px {
+    font-size: 20px;
+}
+
+.f-30-px {
+    font-size: 30px;
+}
+.pt-8{
+    padding-top: 32px
+}
+
+
+.pt-24-px{
+    padding-top: 24px;
+}
+.pt-28-px{
+    padding-top: 28px;
+}
+
+.pt-32-px {
+    padding-top: 32px;
+}
+.pt-40-px{
+    padding-top : 40px;
+}
+
+.mt-30-px{
+    margin-top : 30px;
+}
+
+
+
+
+.max-w-600-px {
+    max-width: 600px;
+}
+
+
+.bg-none{
+    background : #FFFFFF00;
+}
+
+.text-white{
+    color : #FFF;
 }

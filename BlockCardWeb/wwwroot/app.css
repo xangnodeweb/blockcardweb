@@ -2,6 +2,15 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+@font-face{
+    font-family : Noto Sans Lao;
+    src: url(./font/NotoSansLao-Regular.ttf);
+}
+*{
+    font-family : "Noto Sans Lao";
+}
+
+
 a, .btn-link {
     color: #006bb7;
 }
