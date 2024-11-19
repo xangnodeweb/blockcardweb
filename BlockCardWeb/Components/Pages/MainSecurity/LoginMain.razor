@@ -4,7 +4,7 @@
 
     @* <MudImage Src="./image/bg-01.jpg" Class="w-100 position-absolute" Style="top: 0; left:0; height : 100vh;" /> *@
 
-    <MudContainer Style="" Class=" div-login h-100 d-flex flex-column bg-wrap-login pt-32-px position-relative">
+    <MudContainer Style="" Class=" div-login h-100 d-flex flex-column bg-wrap-login pt-32-px position-relative overflow-hidden">
 
         <MudCard Elevation="0" Class="w-100 bg-none d-flex flex-column align-items-center">
             <MudCard Class="d-flex justify-content-center align-items-center " Style="width : 120px; height : 120px; border-radius: 50%; background : #FFFFFF; ">
@@ -20,7 +20,7 @@
 
 
             </MudTextField>
-                <MudIcon Icon="@passwordinputicon" Class="position-absolute " @onclick="showpassword" Style="right: 0;" />
+                <MudIcon Icon="@passwordinputicon" Class="position-absolute icon" @onclick="showpassword" Style="right: 0;" />
             </MudCard>
             <MudButton Class="w-100 h-50-px mt-30-px f-20-px btn-login" Style="border-radius : 25px; "> ເຂົ້າສູ່ລະບົບ  </MudButton>
         </MudCard>
@@ -110,6 +110,10 @@
     .bg-none {
         background: #FFFFFF00;
     }
+    .icon:hover{
+        cursor: pointer;
+    }
+
 
     .mud-input.mud-input-underline:after {
         border-bottom: 2px solid #FFF;
