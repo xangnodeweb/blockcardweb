@@ -1,5 +1,6 @@
 using Blazored.LocalStorage;
 using BlockCardWeb.Components;
+using LibraryService.Models;
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +11,7 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddMudServices();
-
+builder.Services.AddScoped<IUserSqlService, UserSqlService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
