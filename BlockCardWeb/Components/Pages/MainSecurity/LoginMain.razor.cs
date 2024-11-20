@@ -15,6 +15,7 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
         [Inject] public ILocalStorageService localStorage { get; set; }
         [Inject] public NavigationManager nav { get; set; }
         public UserModel usermodel = new UserModel();
+        public UserLogin userrequest = new UserLogin();
 
         public MudTextField<string> refuser = new MudTextField<string>();
         public MudTextField<string> refpass = new MudTextField<string>();
@@ -51,17 +52,17 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
 
         public async Task onLogin()
         {
-            if (usermodel != null)
+            if (userrequest != null)
             {
 
-                if (string.IsNullOrWhiteSpace(usermodel.username))
+                if (string.IsNullOrWhiteSpace(userrequest.username))
                 {
                     refuser.Error = true;
                     refuser.ErrorText = "please enter value username";
                     refuser.FocusAsync();
                     return;
                 }
-                if (string.IsNullOrWhiteSpace(usermodel.password))
+                if (string.IsNullOrWhiteSpace(userrequest.password))
                 {
                     refpass.Error = true;
                     refpass.ErrorText = "please enter value password";
@@ -78,24 +79,30 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
 
             // GENARATE PASSWORDHASH = 
 
-            var passwordhash = userSqlService.Encrypt(usermodel.password);
-            UserModel body = new UserModel();
+            //var passwordhash = userSqlService.Encrypt(usermodel.password);
+            //UserModel body = new UserModel();
 
-            body.username = usermodel.username;
-            body.password = passwordhash;
-            body.first_name = usermodel.username;
-            body.last_name = passwordhash;
-            body.section = "";
-            body.last_login = $"{DateTime.Now}";
-            body.section = "";
-            body.role = "";
-            body.expire_password = $"{DateTime.Now}";
+            //body.username = usermodel.username;
+            //body.password = passwordhash;
+            //body.first_name = usermodel.username;
+            //body.last_name = passwordhash;
+            //body.section = "";
+            //body.last_login = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            //body.section = "";
+            //body.role = "";
+            //body.expire_password = $"{DateTime.Now.ToString("yyyy-MM-dd")}";
+            //await userSqlService.createuser(body);
 
+           var resultlogin = await userSqlService.Loginuser(userrequest);
 
-            //Console.WriteLine(results);
-
-            var result = await userSqlService.getAsync("select * from loginuser");
-            await userSqlService.createuser(body);
+            if (resultlogin.success == true)
+            {
+                if (!string.IsNullOrWhiteSpace(resultlogin.result))
+                {
+                    await localStorage.SetItemAsStringAsync("token", resultlogin.result);
+                    nav.NavigateTo("/", true);
+                }
+            }
 
         }
         public async Task password(string password)

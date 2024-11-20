@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,5 +26,16 @@ namespace LibraryServices.Model
         public string? expire_password { get; set; }
 
     }
+
+    public class UserloginResponse
+    {
+        public bool? success { get; set; }
+        public int? code { get; set; } = 0;
+        public string? message { get; set; }
+        public string? result { get; set; }
+
+    }
+
+
 
 }

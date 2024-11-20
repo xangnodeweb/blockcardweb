@@ -14,10 +14,10 @@
             <MudText Class="text-white f-30-px w-295-px text-center" Style=" margin-top : 12px; width : 295px;"> UVC - BLOCK CARD 2021 </MudText>
         </MudCard>
         <MudCard Elevation="0" Class="w-100 bg-none d-flex flex-column align-items-center px-5 mt-2">
-            <MudTextField T="string" Variant="Variant.Text" AdornmentIcon="@Icons.Material.Filled.Person" Adornment="@Adornment.Start" @bind-Value="@usermodel.username" AdornmentColor="Color.Secondary" Placeholder="USERNAME" Class="mb-3 f-18-px text-white w-100" Style="margin-top : 16px; font-size: 18px; color : #FFF;" />
+            <MudTextField T="string" Variant="Variant.Text" AdornmentIcon="@Icons.Material.Filled.Person" Adornment="@Adornment.Start" @bind-Value="@userrequest.username" AdornmentColor="Color.Secondary" Placeholder="USERNAME" Class="mb-3 f-18-px text-white w-100" Style="margin-top : 16px; font-size: 18px; color : #FFF;" />
             <MudCard Class="position-relative bg-none d-flex flex-row w-100 align-items-center" Elevation="0">
 
-            <MudTextField T="string" Variant="Variant.Text" AdornmentIcon="@Icons.Material.Filled.Https" Adornment="@Adornment.Start"  Placeholder="PASSWORD" @bind-Value="@usermodel.password" InputType="@passwordinput" Class="mb-3 w-100 f-18-px text-white input-password" Style=" margin-top : 16px;  font-size: 18px;">
+                <MudTextField T="string" Variant="Variant.Text" AdornmentIcon="@Icons.Material.Filled.Https" Adornment="@Adornment.Start" Placeholder="PASSWORD" @bind-Value="@userrequest.password" InputType="@passwordinput" Class="mb-3 w-100 f-18-px text-white input-password" Style=" margin-top : 16px;  font-size: 18px;">
 
 
             </MudTextField>

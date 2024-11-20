@@ -1,8 +1,12 @@
 ﻿using LibraryServices.Model;
+using Microsoft.IdentityModel.Tokens;
 using Npgsql;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -56,7 +60,7 @@ namespace LibraryServices
                 await using var conn = new NpgsqlConnection(connstring);
                 await conn.OpenAsync();
 
-                var sql = "insert into userlogin (username , password, first_name , last_name , section , role , last_login , expire_password) values(@username , @password, @first_name, @last_name , @section, @role , @last_login , @expire);";
+                var sql = "insert into loginuser (username , password, first_name , last_name , section , role , last_login , expire_password) values(@username , @password, @first_name, @last_name , @section, @role , @last_login , @expire);";
                 await using (var cmd = new NpgsqlCommand(sql , conn))
                 {
                     cmd.Parameters.AddWithValue("username", request.username);
@@ -65,8 +69,8 @@ namespace LibraryServices
                     cmd.Parameters.AddWithValue("last_name", request.last_name);
                     cmd.Parameters.AddWithValue("section", request.section);
                     cmd.Parameters.AddWithValue("role", request.role);
-                    cmd.Parameters.AddWithValue("last_login", request.last_login);
-                    cmd.Parameters.AddWithValue("expire", request.expire_password);
+                    cmd.Parameters.AddWithValue("last_login", DateTime.ParseExact(request.last_login , "yyyy-MM-dd HH:mm:ss" , CultureInfo.InvariantCulture));
+                    cmd.Parameters.AddWithValue("expire", DateTime.ParseExact(request.expire_password, "yyyy-MM-dd", CultureInfo.InvariantCulture));
                     await cmd.ExecuteNonQueryAsync();
                 }
             }
@@ -118,10 +122,11 @@ namespace LibraryServices
                 throw;
             }
         }
-        public async Task Loginuser(UserLogin request)
+        public async Task<UserloginResponse> Loginuser(UserLogin request)
         {
             try
             {
+                UserloginResponse response = new UserloginResponse();
                 var sql = "select * from loginuser";
                 List<UserModel> resultuser = await getAsync(sql);
 
@@ -131,11 +136,30 @@ namespace LibraryServices
                     var user = resultuser.FirstOrDefault(x => x.username == request.username);
                     if (user != null)
                     {
-                        var ispassword = Decrpt(request.password);
+                        var ispassword = Decrpt(user.password);
 
-
+                        if (ispassword == request.password)
+                        {
+                            var token = await genarateToken(user);
+                            if (!string.IsNullOrWhiteSpace(token))
+                            {
+                                response.code = 0;
+                                response.message = "login_success";
+                                response.success = true;
+                                response.result = token;
+                            }
+                        }
+                        else
+                        {
+                            response.code = 1;
+                            response.message = "username and password incorrent.";
+                            response.success = false;
+                        }
                     }
                 }
+
+
+                return response;
             }
             catch (Exception)
             {
@@ -202,6 +226,42 @@ namespace LibraryServices
             {
                 throw;
             }
+        }
+
+
+        //
+
+      public async Task<string> genarateToken(UserModel usermodel)
+        {
+            try
+            {
+                var cliam = new[]
+                {
+                    new Claim("username" , usermodel.username.ToString()),
+                    new Claim("firstname" , usermodel.first_name.ToString()),
+                    new Claim("role" , usermodel.role.ToString()),
+                    new Claim("lastname" , usermodel.last_name.ToString())
+                };
+                var key_srcret = "this is secret key custom genarate and write token type base64";
+
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key_srcret));
+                var cred = new SigningCredentials(key, SecurityAlgorithms.Aes256CbcHmacSha512);
+
+                var token = new JwtSecurityToken(
+                    claims: cliam,
+                    expires: DateTime.Now.AddDays(2),
+                    signingCredentials: cred
+                    );
+                var jwt = new JwtSecurityTokenHandler().WriteToken(token);  
+
+                return jwt;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+
         }
 
 

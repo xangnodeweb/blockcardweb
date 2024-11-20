@@ -8,6 +8,6 @@ namespace LibraryServices
         string Encrypt(string sInputText);
         Task<List<UserModel>> getAsync(string sql);
         Task getUser();
-        Task Loginuser(UserLogin request);
+        Task<UserloginResponse> Loginuser(UserLogin request);
     }
 }

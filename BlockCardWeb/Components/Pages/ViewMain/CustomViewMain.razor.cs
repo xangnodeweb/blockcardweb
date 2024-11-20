@@ -28,6 +28,8 @@ namespace BlockCardWeb.Components.Pages.ViewMain
                 if (string.IsNullOrWhiteSpace(token))
                 {
                     mainpage = 1;
+                     
+
                 }
                 else
                 {
