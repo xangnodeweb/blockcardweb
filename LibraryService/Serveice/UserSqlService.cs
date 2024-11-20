@@ -5,10 +5,10 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using LibraryService.Models;
 using Microsoft.EntityFrameworkCore.Query;
 
-namespace LibraryService.Models
+
+namespace LibraryService.Serveice
 {
     public class UserSqlService : IUserSqlService
     {
@@ -79,31 +79,99 @@ namespace LibraryService.Models
             catch (Exception ex)
             {
 
+                Console.WriteLine(ex);
+            }
+        }
+
+        public async Task Loginuser(UserLoginModel request)
+        {
+            try
+            {
+                var sql = "select * from loginuser";
+                List<UserLoginModel> resultuser = await getAsync(sql);
+
+                if (resultuser.Count > 0)
+                {
+
+                    var user = resultuser.FirstOrDefault(x => x.username == request.username);
+                    if (user != null)
+                    {
+                        var ispassword = Decrpt(request.password);
+
+
+                    }
+
+
+                }
+
+
+            }
+            catch (Exception)
+            {
                 throw;
             }
         }
+
+
+
+        // create genarate or decrypt password
         public readonly string passwordHash = "#02091990#P@@Sw0rd_XXXX";
         public readonly string SaltKey = "@CS_!OUd0mS4k#02091990";
-        public readonly string VIKey = "!@Oudomsak!@#$%^&*";
+        public readonly string VIKey = "!@Oudomsak!@#$%^";
 
         public string Decrpt(string encryptedText)
         {
-            byte[] cipherTextBytes = Convert.FromBase64String(encryptedText);
-            byte[] keyBytes = new Rfc2898DeriveBytes(passwordHash, Encoding.ASCII.GetBytes(SaltKey)).GetBytes(256 / 8);
 
-            var symmetricKey = new RijndaelManaged() { Mode = CipherMode.CBC, Padding = PaddingMode.None };
-            var decryptor = symmetricKey.CreateDecryptor(keyBytes, Encoding.ASCII.GetBytes(VIKey));
-            var memoryStream = new MemoryStream(cipherTextBytes);
-            var cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
-            byte[] plainTextBytes = new byte[cipherTextBytes.Length];
-            int decryptByteCount = cryptoStream.Read(plainTextBytes, 0, plainTextBytes.Length);
+            try
+            {
+                byte[] cipherTextBytes = Convert.FromBase64String(encryptedText);
+                byte[] keyBytes = new Rfc2898DeriveBytes(passwordHash, Encoding.ASCII.GetBytes(SaltKey)).GetBytes(256 / 8);
 
-            memoryStream.Close();
-            cryptoStream.Close();
-            return Encoding.UTF8.GetString(plainTextBytes, 0, decryptByteCount).TrimEnd("\0".ToCharArray());
+                var symmetricKey = new RijndaelManaged() { Mode = CipherMode.CBC, Padding = PaddingMode.None };
+                var decryptor = symmetricKey.CreateDecryptor(keyBytes, Encoding.ASCII.GetBytes(VIKey));
+                var memoryStream = new MemoryStream(cipherTextBytes);
+                var cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
+                byte[] plainTextBytes = new byte[cipherTextBytes.Length];
+                int decryptByteCount = cryptoStream.Read(plainTextBytes, 0, plainTextBytes.Length);
+
+                memoryStream.Close();
+                cryptoStream.Close();
+                return Encoding.UTF8.GetString(plainTextBytes, 0, decryptByteCount).TrimEnd("\0".ToCharArray());
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
+        public string Encrypt(string sInputText)
+        {
+            try
+            {
+                byte[] plainTextbytes = Encoding.UTF8.GetBytes(sInputText);
+                byte[] keyBytes = new Rfc2898DeriveBytes(passwordHash, Encoding.ASCII.GetBytes(SaltKey)).GetBytes(256 / 8);
 
+                var symetricKey = new RijndaelManaged() { Mode = CipherMode.CBC, Padding = PaddingMode.Zeros };
+                var encryptor = symetricKey.CreateEncryptor(keyBytes, Encoding.ASCII.GetBytes(VIKey));
+                byte[] cipherTextBytes;
+                using (var memoryStream = new MemoryStream())
+                {
+                    using (var cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
+                    {
+                        cryptoStream.Write(plainTextbytes, 0, plainTextbytes.Length);
+                        cryptoStream.FlushFinalBlock();
+                        cipherTextBytes = memoryStream.ToArray();
+                        cryptoStream.Close();
+                    }
+                    memoryStream.Close();
+                }
+                return Convert.ToBase64String(cipherTextBytes);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
         public class UserLoginModel
         {

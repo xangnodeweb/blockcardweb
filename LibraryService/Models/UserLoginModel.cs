@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LibraryService.Models
 {
-	public class UserLoginModel
+	public class UserLogin
 	{
 		public string? username { get; set; }
 		public string? password { get; set; }

@@ -7,14 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Models\User_Login_Model.cs" />
+    <Compile Remove="Models\UserLoginModel.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Models\User_Login_Model.cs" />
+    <None Include="Models\UserLoginModel.cs" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Abp.Zero.Common" Version="9.4.1" />
     <PackageReference Include="EntityFramework6.Npgsql" Version="6.4.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
     <PackageReference Include="Npgsql" Version="9.0.0" />

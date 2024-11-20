@@ -1,6 +1,6 @@
 using Blazored.LocalStorage;
 using BlockCardWeb.Components;
-using LibraryService.Models;
+using LibraryServices;
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
