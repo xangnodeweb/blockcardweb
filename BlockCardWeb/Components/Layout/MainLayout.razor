@@ -1,4 +1,6 @@
-﻿@inherits LayoutComponentBase
+﻿@using Microsoft.AspNetCore.Mvc
+
+@inherits LayoutComponentBase
 @* Required *@
 <MudThemeProvider />
 <MudPopoverProvider />
@@ -14,13 +16,13 @@
 
         <authorize>
             @* <BlockCardWeb.Components.Pages.MainPagebar /> *@
-            <MudPaper Class="w-100 h-100-vh bg-white d-flex border-radius-0 overflow-hidden">
+            <MudPaper Class="w-100 h-100-vh bg-white d-flex border-radius-0 overflow-hidden" Elevation="0">
 
                 <MudPaper Class="main-slidebar" Elevation="0">
                     <MudContainer Class="bg-default px-0">
                         <MudCard Elevation="0" Class="w-100  bg-opacity-bg  h-83-px d-flex align-items-center flex-row div-tappage border-radius-0">
                             <i class="ti ti-wallet f-30-px"> </i>
-                            <div class="d-flex align-items-center nav-lb" @onclick=@(() => linkto("/"))>
+                            <div class="d-flex align-items-center nav-lb" @onclick=@(() => linkto("/" , 0))>
 
                                 <MudText Class="text-white font-w-700 f-23-px "> UVC </MudText>
                                 <MudText Class="text-white f-23-px "> Block card </MudText>
@@ -34,27 +36,27 @@
                     <MudCard Class="w-100 bg-none border-radius-0 nav-menu" Elevation="0">
 
                         @* <MudText Class="color-white lb-nav">  ----- Block Card </MudText> *@
-                        <li @onclick=@(() => linkto("/queryvoucher"))>
+                        <li @onclick=@(() => linkto("/queryvoucher" , 0)) class=@($"{(pathmain == 1 ? "show" : "")}")>
                             <i class="fa fa-money"> </i>
                             <MudText Class="link-name">  ກວດບັດຕື່ມເງິນ </MudText>
                         </li>
-                        <li>
+                        <li @onclick=@(() => linkto("/reportvoucher" , 0)) class=@($"{(pathmain == 2 ? "show" : "")}")>
                             <i class="fas fa-chart-line"></i>
                             <MudText Class="link-name"> ລະບົບລາຍງານ </MudText>
                         </li>
                         @* <MudText Class="color-white lb-nav">  ----- setting  </MudText> *@
 
-                        <li>
+                        <li @onclick=@(() => linkto("/" , 0)) class=@($"{(pathmain == 0 ? "show" : "")}")>
                             <i class="fa fa-user"></i>
                             <MudText Class="link-name"> ຜູ້ພັດທະນາລະບົບ </MudText>
                         </li>
 
-                        <li>
+                        <li @onclick=@(() => linkto("/resetpassword" , 0)) class=@($"{(pathmain == 3 ? "show" : "")}")>
                             <i class="fa fa-unlock-alt"></i>
                             <MudText Class="link-name"> ປ່ຽນລະຫັດຜ່ານ </MudText>
                         </li>
 
-                        <li>
+                        <li @onclick=@(() => linkto("/logout" , 1)) class=@($"{(pathmain == 4 ? "show" : "")}")>
                             <i class="fa fa-power-off"></i>
                             <MudText Class="text-stds link-name"> ອອກຈາກລະບົບ </MudText>
                         </li>
@@ -90,8 +92,8 @@
                                 <MudText Class="f-18-px color-default">   </MudText>
                             }
                         </MudCard>
-                        <MudPaper Elevation="0" Class="w-95 border-radius-0 bg-white m-auto mt-4  h-74-vh">
-                           @Body
+                        <MudPaper Elevation="0" Class="w-95 border-radius-0 bg-none m-auto mt-4  h-74-vh">
+                            @Body
 
                         </MudPaper>
 
@@ -224,6 +226,10 @@
         color: #000000;
     }
 
+    .main-slidebar .nav-menu li.show{
+        border-left : 2px solid #01c0c8;
+    }
+
     .home-section {
         width: 100%;
         height: 100%;
@@ -273,6 +279,7 @@
 
 @code {
     [Inject] public NavigationManager nav { get; set; }
+    [Inject] public IJSRuntime js { get; set; }
     public int? pathmain { get; set; }
 
 
@@ -288,14 +295,48 @@
                 {
                     pathmain = 0;
                 }
+                else
+                {
+                    pathmain = 1;
+                }
             }
         }
 
-      
+
     }
-    public async Task linkto(string url)
+    public async Task linkto(string url , int? btn)
     {
+        if (btn == 1)
+        {
+            return;
+        }
         nav.NavigateTo(url);
+        var paths = nav.BaseUri.Split("/");
+        StateHasChanged();
+        var pathss = nav.Uri.Substring(nav.BaseUri.Length - 1);
+
+        var pathurl = await js.InvokeAsync<string>("pathlocal");
+        if (pathurl != null)
+        {
+            var urlpath = pathurl.Split("/");
+            if (urlpath.Length > 0)
+            {
+                if (urlpath[3] == "")
+                {
+                    pathmain = 0;
+                }
+                else if (urlpath[3] == "queryvoucher")
+                {
+                    pathmain = 1;
+                }
+                else
+
+                {
+                    pathmain = 2;
+                }
+            }
+            StateHasChanged();
+        }
 
     }
 }

@@ -33,15 +33,23 @@
 
     <script>
         $(document).ready(function () {
-
             $(document).on('click', ".btn-menu", function () {
-
                 document.querySelector(".main-slidebar").classList.toggle("show");
                 document.querySelector(".home-section").classList.toggle("show");
             })
-
-
+       
         })
+
+    </script>
+    <script>
+
+        function pathlocal() {
+
+            const path = window.location.href;
+            console.log(path)
+            return path
+        }
+
 
     </script>
 </body>

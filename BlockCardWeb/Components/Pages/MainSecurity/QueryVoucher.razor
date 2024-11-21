@@ -1,13 +1,40 @@
 ﻿@page "/queryvoucher"
 
-<MudPaper Class="w-100 h-100-vh bg-gray">
+<MudPaper Class="w-100 h-100-vh bg-none" Elevation="0">
 
     <MudCard Elevation="0" Class="w-100 bg-none">
-        <MudText>  QueryVoucher </MudText>
+        @* <MudText>  QueryVoucher </MudText> *@
 
+        <MudGrid Class="ma-0 px-4 pt-4 pb-5 bg-white w-100"> 
+            <MudItem xs="12" Class="d-flex flex-column pa-0">
+                <MudText Class="f-20-px font-w-500"> ໝາຍເລກ B/S </MudText>
+            
+
+                @* <MudDatePicker Variant="Variant.Outlined" AnchorOrigin="Origin.BottomLeft^"  ShowToolbar="false" /> *@
+            </MudItem>
+            <MudItem Class="d-flex  align-items-center pa-0 " xs="12" >
+                    <MudTextField T="string" Variant="Variant.Outlined" Placeholder="ໝາຍເລກ B/S" />
+                <MudButton StartIcon="@Icons.Material.Filled.Search" Class="bg-primary-btn color-white ml-4 fill-white w-110-px f-16-px"> ຄົ້ນຫາຂໍ້ມູນ </MudButton>
+                <MudButton StartIcon="@Icons.Material.Filled.Refresh" Class="bg-clear-btn color-white ml-5 fill-white w-110-px  f-16-px"> ຍົກເລີກ </MudButton>
+       
+
+            </MudItem>
+
+        </MudGrid>
     </MudCard>
 
 </MudPaper>
+
+
+<style>
+    .mud-input-control{
+        max-width : 450px;
+    }
+
+    .mud-input > input.mud-input-root-outlined, div.mud-input-slot.mud-input-root-outlined{
+        font-family: 'Noto Sans Lao';
+    }
+</style>
 
 @code {
 

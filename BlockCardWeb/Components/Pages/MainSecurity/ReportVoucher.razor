@@ -1,0 +1,45 @@
+﻿@page "/reportvoucher"
+@rendermode InteractiveServer
+
+<MudPaper Class="w-100 bg-white border-radius-0" Elevation="0">
+
+    <MudGrid Class="ma-0 py-5 w-100">
+
+        <MudItem Class="px-4 py-0 d-flex flex-column" xs="3">
+            <MudText> ວັນທີເລິ່ມຕົ້ນ </MudText>
+            <MudDatePicker Variant="Variant.Outlined" ShowToolbar="false" AnchorOrigin="Origin.BottomLeft" />
+        </MudItem>
+
+        <MudItem Class="px-4 py-0 d-flex flex-column" xs="3">
+            <MudText> ວັນທີສິ້ນສຸດ </MudText>
+            <MudDatePicker Variant="Variant.Outlined" ShowToolbar="false" AnchorOrigin="Origin.BottomLeft" />
+        </MudItem>
+        <MudItem Class="px-4 py-0 d-flex flex-column" xs="3">
+            <MudText> ຜູ້ຜະລິດບັດ </MudText>
+            <MudSelect T="string" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                <MudSelectItem Value=@("")>
+                    ລວມທັງໝົດ
+                </MudSelectItem>
+            </MudSelect>
+        </MudItem>
+        <MudItem Class="px-4 py-0 d-flex flex-column" xs="3">
+            <MudText> ແຂວງ </MudText>
+            <MudSelect T="string" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                <MudSelectItem Value=@("")>
+                    ລວມທັງໝົດ
+                </MudSelectItem>
+            </MudSelect>
+        </MudItem>
+        <MudItem xs="12" Class="px-4  pb-0 pt-5 d-flex align-items-center">
+            <MudButton StartIcon="@Icons.Material.Filled.Search" Class="bg-primary-btn   color-white fill-white w-120-px h-45-px"> ຄົ້ນຫາຂໍ້ມູນ  </MudButton>
+            <MudButton StartIcon="@Icons.Material.Filled.Refresh" Class="bg-clear-btn color-white fill-white  w-120-px h-45-px ml-4"> ຍົກເລີກ  </MudButton>
+        </MudItem>
+    </MudGrid>
+
+
+</MudPaper>
+
+
+@code {
+
+}
