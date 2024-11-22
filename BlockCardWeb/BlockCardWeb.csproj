@@ -7,12 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Components\Pages\Export\" />
     <Folder Include="wwwroot\image\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageReference Include="MudBlazor" Version="7.15.0" />
+    <PackageReference Include="OfficeOpenXml.Core.ExcelPackage" Version="1.0.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.2.0" />
   </ItemGroup>
 

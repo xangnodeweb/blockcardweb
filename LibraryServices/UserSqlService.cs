@@ -61,7 +61,7 @@ namespace LibraryServices
                 await conn.OpenAsync();
 
                 var sql = "insert into loginuser (username , password, first_name , last_name , section , role , last_login , expire_password) values(@username , @password, @first_name, @last_name , @section, @role , @last_login , @expire);";
-                await using (var cmd = new NpgsqlCommand(sql , conn))
+                await using (var cmd = new NpgsqlCommand(sql, conn))
                 {
                     cmd.Parameters.AddWithValue("username", request.username);
                     cmd.Parameters.AddWithValue("password", request.password);
@@ -69,7 +69,7 @@ namespace LibraryServices
                     cmd.Parameters.AddWithValue("last_name", request.last_name);
                     cmd.Parameters.AddWithValue("section", request.section);
                     cmd.Parameters.AddWithValue("role", request.role);
-                    cmd.Parameters.AddWithValue("last_login", DateTime.ParseExact(request.last_login , "yyyy-MM-dd HH:mm:ss" , CultureInfo.InvariantCulture));
+                    cmd.Parameters.AddWithValue("last_login", DateTime.ParseExact(request.last_login, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
                     cmd.Parameters.AddWithValue("expire", DateTime.ParseExact(request.expire_password, "yyyy-MM-dd", CultureInfo.InvariantCulture));
                     await cmd.ExecuteNonQueryAsync();
                 }
@@ -99,15 +99,145 @@ namespace LibraryServices
                 {
                     while (await reader.ReadAsync())
                         Console.WriteLine(reader.GetString(0));
-
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+        public async Task<List<Supplier>> getSupplierTolist(string sql)
+        {
+            try
+            {
+                var connstring = "Host=172.28.17.243;Username=postgres;Password=12345678;Database=UVC_BlockCard";
+
+                List<Supplier> modes = new List<Supplier>();
+                Console.WriteLine(modes);
+                await using var conn = new NpgsqlConnection(connstring);
+                await conn.OpenAsync();
+
+                await using (var cmd = new NpgsqlCommand(sql, conn))
+                await using (var reader = await cmd.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        modes.Add(new Supplier { supplier_id = Convert.ToInt32(reader["supplier_id"]) , supplier_name = reader["supplier_name"].ToString() });
+                    }
+                }
+                return modes;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                if (ex != null)
+                {
+                    Console.WriteLine(ex);
+                }
+            }
+            return new List<Supplier>();
+        }
+
+        public async Task<List<Province>> getProvince(string sql)
+        {
+            try
+            {
+                var connstring = "Host=172.28.17.243;Username=postgres;Password=12345678;Database=UVC_BlockCard";
+
+                List<Province> modes = new List<Province>();
+                Console.WriteLine(modes);
+                await using var conn = new NpgsqlConnection(connstring);
+                await conn.OpenAsync();
+
+                await using (var cmd = new NpgsqlCommand(sql, conn))
+                await using (var reader = await cmd.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        modes.Add(new Province { provinceid = Convert.ToInt32(reader["id"]), provincename = reader["province"].ToString() });
+                    }
+                }
+                return modes;
 
             }
             catch (Exception ex)
             {
-
-                Console.WriteLine(ex);
+                throw;
             }
+        }
+
+        public async Task<VoucherReportReponse> getQueryVoucherReport(string sql)
+        {
+            VoucherReportReponse voucherreponse = new VoucherReportReponse();
+            try
+            {
+                var connstring = "Host=172.28.17.243;Username=postgres;Password=12345678;Database=UVC_BlockCard";
+
+                List<BlockCardReponse> modes = new List<BlockCardReponse>();
+             
+                Console.WriteLine(modes);
+                await using var conn = new NpgsqlConnection(connstring);
+                await conn.OpenAsync();
+
+                await using (var cmd = new NpgsqlCommand(sql, conn))
+                await using (var reader = await cmd.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        var modelblockcard = new BlockCardReponse(){ bs_old = reader["bs_old"].ToString(),
+                            facevalue = reader["facevalue"].ToString(),
+                            expire_date = reader["expire_date"].ToString(),
+                            bs_new = reader["bs_new"].ToString(),
+                            msisdn = reader["msisdn"].ToString(),
+                            supplier_name = reader["supplier_name"].ToString(),
+                            province = reader["province"].ToString(),
+                            create_time = reader["create_time"].ToString(),
+                            remark = reader["remark"].ToString(),
+                            create_user = reader["create_user"].ToString()
+                        };
+
+                        modes.Add(new BlockCardReponse {
+                            bs_old = reader["bs_old"].ToString(),
+                            facevalue = reader["facevalue"].ToString(),
+                            expire_date = reader["expire_date"].ToString(),
+                            bs_new = reader["bs_new"].ToString(),
+                            msisdn = reader["msisdn"].ToString(),
+                            supplier_name = reader["supplier_name"].ToString(),
+                            province = reader["province"].ToString(),
+                            create_time = reader["create_time"].ToString(),
+                            remark = reader["remark"].ToString(),
+                            create_user = reader["create_user"].ToString()
+                        });
+                    }
+                }
+                voucherreponse.result.success = true;
+                voucherreponse.result.message = "";
+                voucherreponse.result.result = modes;
+                return voucherreponse;
+
+            }
+            catch (Exception ex)
+            {
+                voucherreponse.result.message = "CANNOT_GET_Voucher";
+                voucherreponse.result.code = 0;
+                return voucherreponse;
+            }
+        }
+
+        public async Task genaratemodel( )
+        {
+            try
+            {
+
+
+
+
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
         }
 
         public async Task createUser(UserModel request)
@@ -166,6 +296,12 @@ namespace LibraryServices
                 throw;
             }
         }
+
+
+
+
+
+
 
 
 
@@ -231,7 +367,7 @@ namespace LibraryServices
 
         //
 
-      public async Task<string> genarateToken(UserModel usermodel)
+        public async Task<string> genarateToken(UserModel usermodel)
         {
             try
             {
@@ -252,7 +388,7 @@ namespace LibraryServices
                     expires: DateTime.Now.AddDays(2),
                     signingCredentials: cred
                     );
-                var jwt = new JwtSecurityTokenHandler().WriteToken(token);  
+                var jwt = new JwtSecurityTokenHandler().WriteToken(token);
 
                 return jwt;
             }

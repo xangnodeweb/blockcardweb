@@ -7,6 +7,9 @@ namespace LibraryServices
         string Decrpt(string encryptedText);
         string Encrypt(string sInputText);
         Task<List<UserModel>> getAsync(string sql);
+        Task<List<Province>> getProvince(string sql);
+        Task<VoucherReportReponse> getQueryVoucherReport(string sql);
+        Task<List<Supplier>> getSupplierTolist(string sql);
         Task getUser();
         Task<UserloginResponse> Loginuser(UserLogin request);
     }

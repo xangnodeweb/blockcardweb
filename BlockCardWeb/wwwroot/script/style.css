@@ -374,3 +374,8 @@ height : 135px;
 .cursor-pointer {
     cursor: pointer;
 }
+
+
+.text-stds{
+    font-family : 'Noto Sans Lao'
+}
