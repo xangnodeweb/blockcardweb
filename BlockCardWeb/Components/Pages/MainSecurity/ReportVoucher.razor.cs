@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Components;
 using BlockCardWeb.Components.Pages;
 using Microsoft.JSInterop;
 using OfficeOpenXml;
+using Microsoft.AspNetCore.Components.Web;
+using System.Text.Json;
 namespace BlockCardWeb.Components.Pages.MainSecurity
 {
     public partial class ReportVoucher
@@ -17,15 +19,15 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
         public VoucherReportReponse voucherreportReponse = new VoucherReportReponse();
         public reportVoucherRequest voucherreportrequest = new reportVoucherRequest();
 
-        public IEnumerable<VoucherReportReponse> vouchermodel = new List<VoucherReportReponse>();
         public List<BlockCardReponse> blockcardmodel = new List<BlockCardReponse>();    // blockcardmodel where result model
-
+        public List<BlockCardReponse> blockmodellist = new List<BlockCardReponse>();
         /// <summary>
         /// keyvalue is operation suppliername or provincename
         /// </summary>
         public string? keyValue = "";
         public bool enable = true;
         public bool? loading = false;
+        public string? keyValuesear = "";
 
         protected override async Task OnInitializedAsync()
         {
@@ -59,45 +61,58 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
         {
             loading = true;
             StateHasChanged();
+            var keyvalue = "";
             if (voucherreportrequest == null)
             {
+                loading = false;
+                StateHasChanged();
                 return;
 
             }
             if (string.IsNullOrWhiteSpace(voucherreportrequest.datestart))
             {
+                loading = false;
+                StateHasChanged();
                 return;
             }
             if (string.IsNullOrWhiteSpace(voucherreportrequest.dateend))
             {
+                loading = false;
+                StateHasChanged();
                 return;
             }
+
             if (!string.IsNullOrWhiteSpace(voucherreportrequest.suppliername))
             {
-                keyValue += $"and supplier_name={voucherreportrequest.suppliername}";
+                if (voucherreportrequest.suppliername != "0")
+                {
+                    keyvalue += $"and supplier_name='{voucherreportrequest.suppliername}'";
+                }
             }
+
             if (!string.IsNullOrWhiteSpace(voucherreportrequest.provincename))
             {
-                keyValue += $"and province={voucherreportrequest.provincename}";
+                if (voucherreportrequest.provincename != "0")
+                {
+                    keyvalue += $"and province='{voucherreportrequest.provincename}'";
+                }
             }
+
             voucherreportrequest.datestart = Convert.ToDateTime(voucherreportrequest.datestart).ToString("yyyy-MM-dd") + " 00:00:00";
             voucherreportrequest.dateend = Convert.ToDateTime(voucherreportrequest.dateend).ToString("yyyy-MM-dd") + " 23:59:59";
 
-            var sql = $"select * from uvc_block_card where create_time between  '{voucherreportrequest.datestart}' and '{voucherreportrequest.dateend}'  {keyValue}";
+            var sql = $"select * from uvc_block_card where create_time between  '{voucherreportrequest.datestart}' and '{voucherreportrequest.dateend}'  {keyvalue}";
 
 
             var result = await getservice.getQueryVoucherReport(sql);
             if (result.result.success == true)
             {
+                blockmodellist = result.result.result.ToList();
                 blockcardmodel = result.result.result.ToList();
             }
             loading = false;
             await InvokeAsync(StateHasChanged);
         }
-
-
-
-
 
         public async Task valuedateStart(string datestart)
         {
@@ -121,13 +136,70 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
             voucherreportrequest.provincename = provincename;
             Console.WriteLine(provincename);
         }
-
-        public async Task ExportExcel()
+        public async Task ValueChange(string value)
+        {
+            keyValuesear = value;
+            Console.WriteLine(value);
+             StateHasChanged();
+            if (!string.IsNullOrWhiteSpace(value))
+            {
+                Console.WriteLine(JsonSerializer.Serialize(blockcardmodel));
+                blockcardmodel = blockmodellist.Where(x => x.bs_old.Contains(value)).ToList();
+            }
+            else if (string.IsNullOrWhiteSpace(value))
+            {
+                blockcardmodel = blockmodellist.ToList();
+            }
+            Console.WriteLine(value);
+            await InvokeAsync(StateHasChanged);
+        }
+  
+        public async Task ChangeValue(KeyboardEventArgs value)
         {
 
-            var result = await ExportGenarate(js , blockcardmodel);
 
+            if (value.Key != null)
+            {
+                //Console.WriteLine(keyValuesear);
+
+                if (value.Key == "Enter")
+                {
+                    if (!string.IsNullOrWhiteSpace(keyValuesear))
+                    {
+                        blockcardmodel = blockmodellist.Where(x => x.bs_old.Contains(keyValuesear)).ToList();
+                    }
+                    else
+                    {
+                        blockcardmodel = blockmodellist.ToList();
+                    }
+
+                }
+                Console.WriteLine(keyValuesear);
+                if (!string.IsNullOrWhiteSpace(keyValuesear))
+                {
+                    Console.WriteLine(JsonSerializer.Serialize(blockcardmodel));
+                    blockcardmodel = blockmodellist.Where(x => x.bs_old.Contains(keyValuesear)).ToList();
+                }
+                //else if (string.IsNullOrWhiteSpace(keyValuesear))
+                //{
+                //    blockcardmodel = blockmodellist.ToList();
+                //}
+
+            }
+            StateHasChanged();
+        }
+        public async Task ExportExcel()
+        {
+            var result = await ExportGenarate(js, blockcardmodel);
             await js.InvokeVoidAsync("exportexcel", "export.xlsx", result);
+        }
+        public async Task clearData()
+        {
+            voucherreportrequest.dateend = "";
+            voucherreportrequest.datestart = "";
+            voucherreportrequest.suppliername = "";
+            voucherreportrequest.provincename = "";
+            blockcardmodel = new List<BlockCardReponse>();
 
         }
         public static async Task<string> ExportGenarate(IJSRuntime ijsruntime, List<BlockCardReponse> collection)
