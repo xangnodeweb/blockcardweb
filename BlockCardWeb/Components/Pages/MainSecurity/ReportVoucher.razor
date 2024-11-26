@@ -8,13 +8,13 @@
         <MudGrid Class="ma-0 py-5 w-100">
 
             <MudItem Class="px-4 py-0 d-flex flex-column" xs="3">
-                <MudText> ວັນທີເລິ່ມຕົ້ນ </MudText>
-                <MudDatePicker Variant="Variant.Outlined" ShowToolbar="false" AnchorOrigin="Origin.BottomLeft"  TextChanged="valuedateStart" />
+                <MudText> ວັນທີເລິ່ມຕົ້ນ </MudText> 
+                <MudDatePicker Variant="Variant.Outlined" ShowToolbar="false" AnchorOrigin="Origin.BottomLeft" @ref="@refdatestart" TextChanged="valuedateStart" />
             </MudItem>
 
             <MudItem Class="px-4 py-0 d-flex flex-column" xs="3">
                 <MudText> ວັນທີສິ້ນສຸດ </MudText>
-                <MudDatePicker Variant="Variant.Outlined" ShowToolbar="false" AnchorOrigin="Origin.BottomLeft" TextChanged="valuedateend" />
+                <MudDatePicker Variant="Variant.Outlined" ShowToolbar="false" AnchorOrigin="Origin.BottomLeft" TextChanged="valuedateend" @ref="@refdateend" />
             </MudItem>
             <MudItem Class="px-4 py-0 d-flex flex-column" xs="3">
                 <MudText> ຜູ້ຜະລິດບັດ </MudText>
@@ -72,12 +72,12 @@
 
 
             <MudCard Class="bg-none border-radius-0  d-flex flex-row pl-3 pt-3 " Elevation="0">
-                <MudButton OnClick="ExportExcel" Class="bg-export w-100-px h-47-px border-1">Export</MudButton>
-                <MudButton Class="bg-export w-100-px h-47-px border-1 ml-3 border-1">Print</MudButton>
+                <MudButton OnClick="ExportExcel" Class="bg-export w-100-px h-47-px border-1-solid">Export</MudButton>
+                <MudButton Class="bg-export w-100-px h-47-px border-1 ml-3 border-1-solid">Print</MudButton>
             </MudCard>
             <MudCard Class="border-radius-0 bg-none flex-row align-items-center" Elevation="0">
                 <MudText> Search :    </MudText>
-                <MudTextField T="string" Variant="Variant.Text" Class="ml-2 input-search" ValueChanged="ValueChange" OnKeyDown="ChangeValue" />
+                <MudTextField T="string" Variant="Variant.Text" Class="ml-2 input-search " Value="@keyValuesear" ValueChanged="ValueChange" @onkeypress="valuechangetext" OnKeyDown="ChangeValue" />
             </MudCard>
         </MudCard>
         @if (loading == true)

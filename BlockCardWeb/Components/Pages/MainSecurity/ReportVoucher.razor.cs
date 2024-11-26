@@ -6,6 +6,8 @@ using Microsoft.JSInterop;
 using OfficeOpenXml;
 using Microsoft.AspNetCore.Components.Web;
 using System.Text.Json;
+using System.Linq;
+using MudBlazor;
 namespace BlockCardWeb.Components.Pages.MainSecurity
 {
     public partial class ReportVoucher
@@ -28,6 +30,9 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
         public bool enable = true;
         public bool? loading = false;
         public string? keyValuesear = "";
+
+        public MudDatePicker refdatestart = new MudDatePicker(); 
+        public MudDatePicker refdateend = new MudDatePicker(); 
 
         protected override async Task OnInitializedAsync()
         {
@@ -71,12 +76,16 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
             }
             if (string.IsNullOrWhiteSpace(voucherreportrequest.datestart))
             {
+                refdatestart.Error = true;
+                refdatestart.ErrorText = "please enter datestart";
                 loading = false;
                 StateHasChanged();
                 return;
             }
             if (string.IsNullOrWhiteSpace(voucherreportrequest.dateend))
             {
+                refdateend.Error = true;
+                refdateend.ErrorText = "please enter dateend";
                 loading = false;
                 StateHasChanged();
                 return;
@@ -140,11 +149,12 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
         {
             keyValuesear = value;
             Console.WriteLine(value);
-             StateHasChanged();
+            StateHasChanged();
             if (!string.IsNullOrWhiteSpace(value))
             {
                 Console.WriteLine(JsonSerializer.Serialize(blockcardmodel));
                 blockcardmodel = blockmodellist.Where(x => x.bs_old.Contains(value)).ToList();
+                await InvokeAsync(StateHasChanged);
             }
             else if (string.IsNullOrWhiteSpace(value))
             {
@@ -153,11 +163,11 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
             Console.WriteLine(value);
             await InvokeAsync(StateHasChanged);
         }
-  
+
         public async Task ChangeValue(KeyboardEventArgs value)
         {
-
-
+            await Task.Delay(50);
+    
             if (value.Key != null)
             {
                 //Console.WriteLine(keyValuesear);
@@ -166,7 +176,7 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
                 {
                     if (!string.IsNullOrWhiteSpace(keyValuesear))
                     {
-                        blockcardmodel = blockmodellist.Where(x => x.bs_old.Contains(keyValuesear)).ToList();
+                        blockcardmodel = blockmodellist.Where(x => x.bs_old.Contains(keyValuesear) || x.facevalue.Contains(keyValuesear) || x.bs_new.Contains(keyValuesear) || x.msisdn.Contains(keyValuesear) || x.supplier_name.Contains(keyValuesear) || x.province.Contains(keyValuesear)).ToList();
                     }
                     else
                     {
@@ -174,19 +184,25 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
                     }
 
                 }
-                Console.WriteLine(keyValuesear);
+
                 if (!string.IsNullOrWhiteSpace(keyValuesear))
                 {
                     Console.WriteLine(JsonSerializer.Serialize(blockcardmodel));
-                    blockcardmodel = blockmodellist.Where(x => x.bs_old.Contains(keyValuesear)).ToList();
+                    blockcardmodel = blockmodellist.Where(x => x.bs_old.Contains(keyValuesear) || x.facevalue.Contains(keyValuesear) || x.bs_new.Contains(keyValuesear) || x.msisdn.Contains(keyValuesear) || x.supplier_name.Contains(keyValuesear) || x.province.Contains(keyValuesear)).ToList();
                 }
-                //else if (string.IsNullOrWhiteSpace(keyValuesear))
-                //{
-                //    blockcardmodel = blockmodellist.ToList();
-                //}
+                else if (!string.IsNullOrWhiteSpace(keyValuesear))
+                {
+                    blockcardmodel = blockmodellist.ToList();
+                }
+
 
             }
             StateHasChanged();
+        }
+        public async Task valuechangetext()
+        {
+            Console.WriteLine("value keypress : " + keyValuesear);
+
         }
         public async Task ExportExcel()
         {
@@ -200,6 +216,8 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
             voucherreportrequest.suppliername = "";
             voucherreportrequest.provincename = "";
             blockcardmodel = new List<BlockCardReponse>();
+            refdatestart.ClearAsync();
+            refdateend.ClearAsync();
 
         }
         public static async Task<string> ExportGenarate(IJSRuntime ijsruntime, List<BlockCardReponse> collection)

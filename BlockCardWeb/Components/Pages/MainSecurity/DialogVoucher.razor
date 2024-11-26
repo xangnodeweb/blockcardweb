@@ -1,0 +1,24 @@
+﻿
+<MudDialog>
+<DialogContent>
+    <MudPaper Class="d-flex flex-column align-items-center justify-content-between h-300-px pt-8" Elevation="0">
+        <MudGrid Class="ma-0 w-100">
+            <MudItem xs="12" Class="pa-0 text-center">
+                    <MudIcon Icon="@Icons.Material.Filled.Cancel" Class="f-100-px m-auto" />
+            </MudItem>
+                <MudItem xs="12" Class="pa-0">
+                    <MudText Class="f-20-px text-center"> @((MarkupString)contentstring) </MudText>
+                </MudItem>
+        </MudGrid>
+
+        <MudCard Class="d-flex flex-row justify-end w-100">
+                <MudButton Class="bg-primary-btn w-100-px h-50-px color-white" @onclick="cancle"> OK </MudButton>
+        </MudCard>
+    </MudPaper>
+</DialogContent>
+</MudDialog>
+
+
+@code {
+
+}
