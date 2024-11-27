@@ -26,14 +26,15 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
         {
             try
             {
-                MudNumericField<string> refbs = new MudNumericField<string>();
+          
                 loading = true;
                 StateHasChanged();
                 if (string.IsNullOrWhiteSpace(bs))
                 {
+                    loading = false;
                     refbs.Error = true;
                     refbs.ErrorText = "ກະລຸນາລະບຸໝາຍເລກ BS";
-                    loading = false;
+                    refbs.FocusAsync();
                     StateHasChanged();
                     return;
                 }

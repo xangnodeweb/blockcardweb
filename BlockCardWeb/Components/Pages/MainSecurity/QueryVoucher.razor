@@ -12,10 +12,16 @@
 
                 @* <MudDatePicker Variant="Variant.Outlined" AnchorOrigin="Origin.BottomLeft^"  ShowToolbar="false" /> *@
             </MudItem>
-            <MudItem Class="d-flex  align-items-center pa-0 " xs="12">
-                <MudNumericField T="string" Variant="Variant.Outlined" HideSpinButtons="true" @ref="@refbs" Pattern=@("[0-9]") @bind-Value="@bs" Placeholder="ໝາຍເລກ B/S" Class="input-search" />
+            <MudItem Class="d-flex   pa-0 " xs="12">
+                <MudCard Elevation="0" Class="max-w-450-px w-40">
+                <MudNumericField T="string" Variant="Variant.Outlined" HideSpinButtons="true" @ref="@refbs"  Pattern=@("[0-9]") @bind-Value="@bs" Placeholder="ໝາຍເລກ B/S" Class="input-search" />
+
+                </MudCard>
+                <MudCard Elevation="0" Class=" d-flex flex-row align-items-center">
                 <MudButton StartIcon="@Icons.Material.Filled.Search" @onclick="QueryVoucherBs" Class="bg-primary-btn color-white ml-4 fill-white w-110-px f-16-px w-130-px h-50-px border-radius-25-px"> ຄົ້ນຫາຂໍ້ມູນ </MudButton>
                 <MudButton StartIcon="@Icons.Material.Filled.Refresh" @onclick="cleardata" Class="bg-clear-btn color-white ml-3 fill-white w-110-px  f-16-px w-120-px h-50-px border-radius-25-px"> ຍົກເລີກ </MudButton>
+
+                </MudCard>
             </MudItem>
 
 
@@ -170,6 +176,13 @@
 
     div.input-lb .mud-input-control {
         width: 100%;
+    }
+
+    .mud-input-control-helper-container{
+        padding : 0;
+    }
+    .mud-input-helper-text.mud-input-error{
+        font-size : 16px;
     }
 </style>
 

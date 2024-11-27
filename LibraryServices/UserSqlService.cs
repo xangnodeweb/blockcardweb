@@ -19,7 +19,9 @@ namespace LibraryServices
     {
         public async Task<List<UserModel>> getAsync(string sql)
         {
-            var connstring = "Host=127.0.0.1;Username=postgres;Password=123456789;Database=user";
+            //var connstring = "Host=127.0.0.1;Username=postgres;Password=123456789;Database=user";
+            var connstring = "Host=172.28.17.243;Username=postgres;Password=12345678;Database=UVC_BlockCard";
+
             await using var conn = new NpgsqlConnection(connstring);
             await conn.OpenAsync();
 
@@ -290,7 +292,9 @@ namespace LibraryServices
             try
             {
                 UserloginResponse response = new UserloginResponse();
-                var sql = "select * from loginuser";
+                //var sql = "select * from loginuser";
+                var sql = $"select * from UVC_LOGIN where username='{request.username}'";
+
                 List<UserModel> resultuser = await getAsync(sql);
 
                 
@@ -301,8 +305,8 @@ namespace LibraryServices
                     if (user != null)
                     {
                         var ispassword = Decrpt(user.password);
-
-                        if (ispassword == request.password)
+                        // PASSWORD have two option lb string ToLower and ToUpperCase
+                        if (ispassword.ToLower() == request.password.ToLower())
                         {
                             var token = await genarateToken(user);
                             if (!string.IsNullOrWhiteSpace(token))
@@ -479,7 +483,8 @@ namespace LibraryServices
                     new Claim("username" , usermodel.username.ToString()),
                     new Claim("firstname" , usermodel.first_name.ToString()),
                     new Claim("role" , usermodel.role.ToString()),
-                    new Claim("lastname" , usermodel.last_name.ToString())
+                    new Claim("lastname" , usermodel.last_name.ToString()),
+                    new Claim("section" , usermodel.section.ToString())
                 };
                 var key_srcret = "this is secret key custom genarate and write token type base64";
 

@@ -1,4 +1,5 @@
-﻿@using Microsoft.AspNetCore.Mvc
+﻿@using LibraryServices.Model
+@using Microsoft.AspNetCore.Mvc
 
 @inherits LayoutComponentBase
 @* Required *@
@@ -12,7 +13,7 @@
 <MudSnackbarProvider />
 <div class="page">
 
-    <BlockCardWeb.Components.Pages.ViewMain.CustomViewMain>
+    <BlockCardWeb.Components.Pages.ViewMain.CustomViewMain username="(args) => UserclaimLoad(args)">
 
         <authorize>
             @* <BlockCardWeb.Components.Pages.MainPagebar /> *@
@@ -22,7 +23,7 @@
 
                     <MudPaper Class="main-slidebar" Elevation="0">
                         <MudContainer Class="bg-default px-0">
-                            <MudCard Elevation="0" Class="w-100  bg-opacity-bg  h-83-px d-flex align-items-center flex-row div-tappage border-radius-0">
+                            <MudCard Elevation="0" Class="w-100  bg-opacity-bg cursor-pointer  h-83-px d-flex align-items-center flex-row div-tappage border-radius-0">
                                 <i class="ti ti-wallet f-30-px"> </i>
                                 <div class="d-flex align-items-center nav-lb" @onclick=@(() => linkto("/" , 0))>
 
@@ -72,7 +73,21 @@
                                 <i class="fa fa-chevron-right f-23-px color-white"> </i>
                             </MudCard>
                             <MudCard Class="d-flex align-items-center h-100 bg-none border-radius-0 flex-row" Elevation="0">
-                                <MudText Class="lb-name"> VT1111 - Suphathta SuphathtaSuphathta </MudText>
+
+                                @if (userClaim != null)
+                                {
+                                    if (!string.IsNullOrWhiteSpace(userClaim.username) && !string.IsNullOrWhiteSpace(userClaim.firstname) && !string.IsNullOrWhiteSpace(userClaim.lastname))
+                                    {
+                                        <MudText Class="lb-name"> @userClaim.username - @userClaim.firstname @userClaim.lastname </MudText>
+                                    }
+       
+                                }
+                                else
+                                {
+                                    <MudText Class="lb-name">  </MudText>
+                                }
+
+
                                 <i class="fas fa-arrow-down f-24-px mx-3 color-opacitys font-w-600 "></i>
                             </MudCard>
                         </MudCard>
@@ -126,7 +141,7 @@
             {
                 <BlockCardWeb.Components.Pages.MainSecurity.ResetPassword />
             }
-           
+
 
 
         </authorize>
@@ -280,7 +295,7 @@
     }
 
     .lb-name {
-        font-size: 20px;
+        font-size: 22px;
         font-weight: 900;
         color: rgba(255,255,255,0.5);
     }
@@ -302,8 +317,9 @@
 @code {
     [Inject] public NavigationManager nav { get; set; }
     [Inject] public IJSRuntime js { get; set; }
+    public UserClaim userClaim = new UserClaim();
     public int? pathmain { get; set; }
-
+    public string? username { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -365,11 +381,15 @@
                 {
                     pathmain = 3;
                 }
-              
+
             }
             StateHasChanged();
         }
 
+    }
+    public async Task UserclaimLoad(UserClaim model)
+    {
+        userClaim = model;
     }
 
     public async Task logout()

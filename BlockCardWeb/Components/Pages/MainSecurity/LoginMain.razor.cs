@@ -94,7 +94,7 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
             //body.expire_password = $"{DateTime.Now.ToString("yyyy-MM-dd")}";
             //await userSqlService.createuser(body);
 
-           var resultlogin = await userSqlService.Loginuser(userrequest);
+            var resultlogin = await userSqlService.Loginuser(userrequest);
 
             if (resultlogin.success == true)
             {
@@ -108,12 +108,21 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
             {
                 if (resultlogin.success == false && resultlogin.code == 1)
                 {
-                    DialogParameters parameter = new DialogParameters() { ["contentstring"] = "not found user login" };
+                    userrequest = new UserLogin();
+                    DialogParameters parameter = new DialogParameters() { ["contentstring"] = "Username ທີ່ທ່ານປ້ອນບໍ່ຖືກຕ້ອງ" };
+                    Dialog.Show<DialogVoucher>("custom dialog option", parameter, new DialogOptions() { NoHeader = true });
+
+                }
+                else if (resultlogin.success == false && resultlogin.code == 2)
+                {
+                    userrequest = new UserLogin();
+                    DialogParameters parameter = new DialogParameters() { ["contentstring"] = "ລະຫັດຜ່ານທີ່ທ່ານປ້ອນບໍ່ຖືກຕ້ອງ" };
                     Dialog.Show<DialogVoucher>("custom dialog option", parameter, new DialogOptions() { NoHeader = true });
                 }
-                else if(resultlogin.success == false && resultlogin.code == 2)
+                else
                 {
-                    DialogParameters parameter = new DialogParameters() { ["contentstring"] = "username and password incorrent." };
+                    userrequest = new UserLogin();
+                    DialogParameters parameter = new DialogParameters() { ["contentstring"] = "ບໍ່ສາມາດເຂົ້າສູ່ລະບົບໄດ້" };
                     Dialog.Show<DialogVoucher>("custom dialog option", parameter, new DialogOptions() { NoHeader = true });
                 }
             }

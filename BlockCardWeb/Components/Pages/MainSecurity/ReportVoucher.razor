@@ -8,7 +8,7 @@
         <MudGrid Class="ma-0 py-5 w-100">
 
             <MudItem Class="px-4 py-0 d-flex flex-column" xs="3">
-                <MudText> ວັນທີເລິ່ມຕົ້ນ </MudText> 
+                <MudText> ວັນທີເລິ່ມຕົ້ນ </MudText>
                 <MudDatePicker Variant="Variant.Outlined" ShowToolbar="false" AnchorOrigin="Origin.BottomLeft" @ref="@refdatestart" TextChanged="valuedateStart" />
             </MudItem>
 
@@ -67,72 +67,77 @@
 
     </MudPaper>
 
-    <MudPaper Class="w-100 mt-3 pb-10-rem " Elevation="0">
-        <MudCard Class="w-100 border-radius-0 d-flex flex-row justify-content-between pr-5 pt-4" Elevation="0">
+    @if (loading == true)
+    {
 
-
-            <MudCard Class="bg-none border-radius-0  d-flex flex-row pl-3 pt-3 " Elevation="0">
-                <MudButton OnClick="ExportExcel" Class="bg-export w-100-px h-47-px border-1-solid">Export</MudButton>
-                <MudButton Class="bg-export w-100-px h-47-px border-1 ml-3 border-1-solid">Print</MudButton>
-            </MudCard>
-            <MudCard Class="border-radius-0 bg-none flex-row align-items-center" Elevation="0">
-                <MudText> Search :    </MudText>
-                <MudTextField T="string" Variant="Variant.Text" Class="ml-2 input-search " Value="@keyValuesear" ValueChanged="ValueChange" @onkeypress="valuechangetext" OnKeyDown="ChangeValue" />
-            </MudCard>
+        <MudCard Elevation="0" Class="w-100 bg-none border-radius-0 align-items-center">
+            <MudProgressCircular Indeterminate="true" />
+            <MudText> laoding  </MudText>
         </MudCard>
-        @if (loading == true)
+    }
+    else
+    {
+        if (btnshow == true)
         {
-            <MudCard Elevation="0" Class="w-100 bg-none border-radius-0 align-items-center">
-                <MudProgressCircular Indeterminate="true" />
-                <MudText> laoding  </MudText>
-            </MudCard>
+            <MudPaper Class="w-100 mt-3 pb-10-rem bg-none" Elevation="0">
+                <MudCard Class="w-100 border-radius-0 d-flex flex-row justify-content-between pr-5 pt-4  pb-3" Elevation="0">
+                    <MudCard Class="bg-none border-radius-0  d-flex flex-row pl-3 pt-3 " Elevation="0">
+                        <MudButton OnClick="ExportExcel" Class="bg-export w-100-px h-47-px border-1-solid">Export</MudButton>
+                        <MudButton Class="bg-export w-100-px h-47-px border-1 ml-3 border-1-solid">Print</MudButton>
+                    </MudCard>
+                    <MudCard Class="border-radius-0 bg-none flex-row align-items-center" Elevation="0">
+                        <MudText> Search :    </MudText>
+                        <MudTextField T="string" Variant="Variant.Text" Class="ml-2 input-search " Value="@keyValuesear" ValueChanged="ValueChange" @onkeypress="valuechangetext" OnKeyDown="ChangeValue" />
+                    </MudCard>
+                </MudCard>
+
+                <MudTable Items="@blockcardmodel" Hover="true" SortLabel="Sort By" Class="border-radius-0 ">
+                    <HeaderContent>
+                        <MudTh> no </MudTh>
+                        <MudTh>  <MudTableSortLabel Enabled="@enable" SortBy="new Func<BlockCardReponse, object>(x => x.bs_old)"> B/S ລູກຄ້າ </MudTableSortLabel> </MudTh>
+                        <MudTh>  <MudTableSortLabel SortBy="new Func<BlockCardReponse, object>(x => x.facevalue)"> ຍອດເງິນໜ້າບັດ </MudTableSortLabel> </MudTh>
+                        <MudTh>  <MudTableSortLabel SortBy="new Func<BlockCardReponse, object>(x => x.expire_date)"> ວັນໝົດອາຍຸ </MudTableSortLabel> </MudTh>
+                        <MudTh>  <MudTableSortLabel SortBy="new Func<BlockCardReponse, object>(x => x.bs_new)"> B/S ປ່ຽນແທນ </MudTableSortLabel> </MudTh>
+                        <MudTh>  <MudTableSortLabel SortBy="new Func<BlockCardReponse, object>(x => x.msisdn)"> ເບີຕິດຕໍ່ </MudTableSortLabel> </MudTh>
+                        <MudTh>  <MudTableSortLabel SortBy="new Func<BlockCardReponse, object>(x => x.supplier_name)"> ຜູ້ຜະລິດບັດ  </MudTableSortLabel> </MudTh>
+                        <MudTh>  <MudTableSortLabel SortBy="new Func<BlockCardReponse, object>(x => x.province)">  ແຂວງ   </MudTableSortLabel> </MudTh>
+                        <MudTh>  <MudTableSortLabel SortBy="new Func<BlockCardReponse, object>(x => x.remark)">  ສາເຫດ   </MudTableSortLabel> </MudTh>
+                        <MudTh>  <MudTableSortLabel SortBy="new Func<BlockCardReponse, object>(x => x.create_user)"> Create User   </MudTableSortLabel> </MudTh>
+                        <MudTh>  <MudTableSortLabel SortBy="new Func<BlockCardReponse, object>(x => x.create_time)">  Craete Time   </MudTableSortLabel> </MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="">@(blockcardmodel.IndexOf(context) + 1)</MudTd>
+                        <MudTd> @context.bs_old </MudTd>
+                        <MudTd> @context.facevalue </MudTd>
+                        <MudTd> @context.expire_date </MudTd>
+                        <MudTd> @context.bs_new </MudTd>
+                        <MudTd> @context.msisdn </MudTd>
+                        <MudTd> @context.supplier_name </MudTd>
+                        <MudTd> @context.province </MudTd>
+                        <MudTd> @context.remark </MudTd>
+                        <MudTd> @context.create_user </MudTd>
+                        <MudTd> @context.create_time </MudTd>
+
+                    </RowTemplate>
+
+                    <PagerContent>
+                        @if (blockcardmodel.Count == 0)
+                        {
+                            <MudText Class="text-center f-16-px py-4"> no record </MudText>
+                        }
+                        <MudTablePager>
+
+                        </MudTablePager>
+                    </PagerContent>
+
+                </MudTable>
+            </MudPaper>
+
         }
-        else
-        {
+    }
 
-            <MudTable Items="@blockcardmodel" Hover="true" SortLabel="Sort By">
-                <HeaderContent>
-                    <MudTh> no </MudTh>
-                    <MudTh>  <MudTableSortLabel Enabled="@enable" SortBy="new Func<BlockCardReponse, object>(x => x.bs_old)"> B/S ລູກຄ້າ </MudTableSortLabel> </MudTh>
-                    <MudTh>  <MudTableSortLabel SortBy="new Func<BlockCardReponse, object>(x => x.facevalue)"> ຍອດເງິນໜ້າບັດ </MudTableSortLabel> </MudTh>
-                    <MudTh>  <MudTableSortLabel SortBy="new Func<BlockCardReponse, object>(x => x.expire_date)"> ວັນໝົດອາຍຸ </MudTableSortLabel> </MudTh>
-                    <MudTh>  <MudTableSortLabel SortBy="new Func<BlockCardReponse, object>(x => x.bs_new)"> B/S ປ່ຽນແທນ </MudTableSortLabel> </MudTh>
-                    <MudTh>  <MudTableSortLabel SortBy="new Func<BlockCardReponse, object>(x => x.msisdn)"> ເບີຕິດຕໍ່ </MudTableSortLabel> </MudTh>
-                    <MudTh>  <MudTableSortLabel SortBy="new Func<BlockCardReponse, object>(x => x.supplier_name)"> ຜູ້ຜະລິດບັດ  </MudTableSortLabel> </MudTh>
-                    <MudTh>  <MudTableSortLabel SortBy="new Func<BlockCardReponse, object>(x => x.province)">  ແຂວງ   </MudTableSortLabel> </MudTh>
-                    <MudTh>  <MudTableSortLabel SortBy="new Func<BlockCardReponse, object>(x => x.remark)">  ສາເຫດ   </MudTableSortLabel> </MudTh>
-                    <MudTh>  <MudTableSortLabel SortBy="new Func<BlockCardReponse, object>(x => x.create_user)"> Create User   </MudTableSortLabel> </MudTh>
-                    <MudTh>  <MudTableSortLabel SortBy="new Func<BlockCardReponse, object>(x => x.create_time)">  Craete Time   </MudTableSortLabel> </MudTh>
-                </HeaderContent>
-                <RowTemplate>
-                    <MudTd DataLabel="">@(blockcardmodel.IndexOf(context) + 1)</MudTd>
-                    <MudTd> @context.bs_old </MudTd>
-                    <MudTd> @context.facevalue </MudTd>
-                    <MudTd> @context.expire_date </MudTd>
-                    <MudTd> @context.bs_new </MudTd>
-                    <MudTd> @context.msisdn </MudTd>
-                    <MudTd> @context.supplier_name </MudTd>
-                    <MudTd> @context.province </MudTd>
-                    <MudTd> @context.remark </MudTd>
-                    <MudTd> @context.create_user </MudTd>
-                    <MudTd> @context.create_time </MudTd>
 
-                </RowTemplate>
 
-                <PagerContent>
-                    @if (blockcardmodel.Count == 0)
-                    {
-                        <MudText Class="text-center f-16-px py-4"> no record </MudText>
-                    }
-                    <MudTablePager>
-
-                    </MudTablePager>
-                </PagerContent>
-
-            </MudTable>
-
-        }
-    </MudPaper>
 
 </MudPaper>
 
@@ -143,6 +148,16 @@
 
     div.input-search .mud-input {
         width: 255px;
+    }
+
+    .mud-table-root .mud-table-head {
+        border-top: 1px solid rgba(244,244,244,1);
+    }
+    .mud-input-control-helper-container{
+        padding-left : 0;
+        padding-right : 0;
+        font-size : 16px;
+
     }
 </style>
 

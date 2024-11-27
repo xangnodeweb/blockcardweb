@@ -13,6 +13,7 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
     public partial class ReportVoucher
     {
         [Inject] public IJSRuntime js { get; set; }
+        [Inject] public IDialogService Dialog { get; set; }
         public UserSqlService getservice = new UserSqlService();
 
 
@@ -30,6 +31,7 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
         public bool enable = true;
         public bool? loading = false;
         public string? keyValuesear = "";
+        public bool? btnshow = false;
 
         public MudDatePicker refdatestart = new MudDatePicker(); 
         public MudDatePicker refdateend = new MudDatePicker(); 
@@ -74,11 +76,16 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
                 return;
 
             }
+            if (string.IsNullOrWhiteSpace(voucherreportrequest.datestart) && string.IsNullOrWhiteSpace(voucherreportrequest.dateend))
+            {
+                OpenDialog("ກະລຸນາກຳນົດຊ່ວງເວລາທີ່ຕ້ອງການ");
+            }
             if (string.IsNullOrWhiteSpace(voucherreportrequest.datestart))
             {
                 refdatestart.Error = true;
                 refdatestart.ErrorText = "ກະລຸນາປ້ອນວັນທີເລີ່ມຕົ້ນ";
                 loading = false;
+
                 StateHasChanged();
                 return;
             }
@@ -120,6 +127,7 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
                 blockcardmodel = result.result.result.ToList();
             }
             loading = false;
+            btnshow = true;
             await InvokeAsync(StateHasChanged);
         }
 
@@ -182,7 +190,6 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
                     {
                         blockcardmodel = blockmodellist.ToList();
                     }
-
                 }
 
                 if (!string.IsNullOrWhiteSpace(keyValuesear))
@@ -194,10 +201,14 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
                 {
                     blockcardmodel = blockmodellist.ToList();
                 }
-
-
             }
             StateHasChanged();
+        }
+        public async Task OpenDialog(string message)
+        {
+            DialogParameters dialogparameter = new DialogParameters() { ["contentstring"] = message };
+            Dialog.Show<DialogVoucher>("custom dialog option", dialogparameter, new DialogOptions() { NoHeader = true });
+
         }
         public async Task valuechangetext()
         {
