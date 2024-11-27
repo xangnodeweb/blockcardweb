@@ -61,7 +61,7 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
 
                 if (dataresult != null)
                 {
-                    if (dataresult["ResultCode"].ToString() != "-1")
+                    if (dataresult["ResultCode"].ToString() == "0")
                     {
            
                   
@@ -164,17 +164,19 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
                             queryvoucher.TradeTime = "";
                         }
 
-
-
-
-
-
-
                         btnstatus = true;
+                    }else if (dataresult["ResultCode"].ToString() == "107010623")
+                    {
+                        btnstatus = false;
+                        DialogParameters dialog = new DialogParameters() { ["contentstring"] = $"ບັດບໍ່ມີໃນລະບົບ" };
+                        Dialog.Show<DialogVoucher>("custom dialog", dialog, new MudBlazor.DialogOptions { NoHeader = true });
+
                     }
                     else
                     {
-                        var message = dataresult["ResultDesc"].ToString() != "0" ? dataresult["ResultDesc"].ToString() : "";
+                        queryvoucher = new QueryVoucherResponse();
+                        btnstatus = false;
+                        var message = dataresult["ResultDesc"].ToString() != null ? dataresult["ResultDesc"].ToString() : "";
 
                         DialogParameters dialog = new DialogParameters() { ["contentstring"] = $"{message}" };
                         Dialog.Show<DialogVoucher>("custom dialog", dialog, new MudBlazor.DialogOptions { NoHeader = true });
@@ -185,6 +187,8 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
                 }
                 else
                 {
+                    btnstatus = false;
+                    queryvoucher = new QueryVoucherResponse();
                     DialogParameters dialog = new DialogParameters() { ["contentstring"] = "" };
                     Dialog.Show<DialogVoucher>("custom dialog", dialog, new MudBlazor.DialogOptions { NoHeader = true });
                 }

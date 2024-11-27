@@ -13,6 +13,7 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
     public partial class LoginMain
     {
         [Inject] public ILocalStorageService localStorage { get; set; }
+        [Inject] public IDialogService Dialog { get; set; }
         [Inject] public NavigationManager nav { get; set; }
         public UserModel usermodel = new UserModel();
         public UserLogin userrequest = new UserLogin();
@@ -101,6 +102,19 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
                 {
                     await localStorage.SetItemAsStringAsync("token", resultlogin.result);
                     nav.NavigateTo("/", true);
+                }
+            }
+            else
+            {
+                if (resultlogin.success == false && resultlogin.code == 1)
+                {
+                    DialogParameters parameter = new DialogParameters() { ["contentstring"] = "not found user login" };
+                    Dialog.Show<DialogVoucher>("custom dialog option", parameter, new DialogOptions() { NoHeader = true });
+                }
+                else if(resultlogin.success == false && resultlogin.code == 2)
+                {
+                    DialogParameters parameter = new DialogParameters() { ["contentstring"] = "username and password incorrent." };
+                    Dialog.Show<DialogVoucher>("custom dialog option", parameter, new DialogOptions() { NoHeader = true });
                 }
             }
 

@@ -1,11 +1,13 @@
 ﻿using LibraryServices.Model;
 using Microsoft.IdentityModel.Tokens;
 using Npgsql;
+using Org.BouncyCastle.Asn1.Ocsp;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -122,7 +124,7 @@ namespace LibraryServices
                 {
                     while (await reader.ReadAsync())
                     {
-                        modes.Add(new Supplier { supplier_id = Convert.ToInt32(reader["supplier_id"]) , supplier_name = reader["supplier_name"].ToString() });
+                        modes.Add(new Supplier { supplier_id = Convert.ToInt32(reader["supplier_id"]), supplier_name = reader["supplier_name"].ToString() });
                     }
                 }
                 return modes;
@@ -174,7 +176,7 @@ namespace LibraryServices
                 var connstring = "Host=172.28.17.243;Username=postgres;Password=12345678;Database=UVC_BlockCard";
 
                 List<BlockCardReponse> modes = new List<BlockCardReponse>();
-             
+
                 Console.WriteLine(modes);
                 await using var conn = new NpgsqlConnection(connstring);
                 await conn.OpenAsync();
@@ -184,7 +186,9 @@ namespace LibraryServices
                 {
                     while (await reader.ReadAsync())
                     {
-                        var modelblockcard = new BlockCardReponse(){ bs_old = reader["bs_old"].ToString(),
+                        var modelblockcard = new BlockCardReponse()
+                        {
+                            bs_old = reader["bs_old"].ToString(),
                             facevalue = reader["facevalue"].ToString(),
                             expire_date = reader["expire_date"].ToString(),
                             bs_new = reader["bs_new"].ToString(),
@@ -196,7 +200,8 @@ namespace LibraryServices
                             create_user = reader["create_user"].ToString()
                         };
 
-                        modes.Add(new BlockCardReponse {
+                        modes.Add(new BlockCardReponse
+                        {
                             bs_old = reader["bs_old"].ToString(),
                             facevalue = reader["facevalue"].ToString(),
                             expire_date = reader["expire_date"].ToString(),
@@ -223,8 +228,36 @@ namespace LibraryServices
                 return voucherreponse;
             }
         }
+        public async Task<bool> updateUser(UserModel request)
+        {
+            try
+            {
+                var connstring = "Host=127.0.0.1;Username=postgres;Password=123456789;Database=user";
 
-        public async Task genaratemodel( )
+
+                await using var conn = new NpgsqlConnection(connstring);
+                await conn.OpenAsync();
+                var password = DateTime.Now.AddMonths(3).ToString("yyyy-MM-dd");
+                var sql = $"update loginuser  set password='{request.password}' , expire_password='{password}' where username='{request.username}' AND first_name='{request.first_name}'";
+                await using (var cmd = new NpgsqlCommand(sql, conn))
+                {
+                    //cmd.Parameters.AddWithValue("password", request.password);
+                    await cmd.ExecuteNonQueryAsync();
+                }
+
+
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+            return false;
+
+        }
+
+        public async Task genaratemodel()
         {
             try
             {
@@ -260,6 +293,7 @@ namespace LibraryServices
                 var sql = "select * from loginuser";
                 List<UserModel> resultuser = await getAsync(sql);
 
+                
                 if (resultuser.Count > 0)
                 {
 
@@ -281,12 +315,25 @@ namespace LibraryServices
                         }
                         else
                         {
-                            response.code = 1;
+                            response.code = 2;
                             response.message = "username and password incorrent.";
                             response.success = false;
                         }
                     }
+                    else
+                    {
+                        response.code = 1;
+                        response.message = "NOT_FOUND_USER";
+                        response.success = false;
+                    }
                 }
+                else
+                {
+                    response.code = 0;
+                    response.message = "LOGIN_FAILED";
+                    response.success = false;
+                }
+
 
 
                 return response;
@@ -298,7 +345,63 @@ namespace LibraryServices
         }
 
 
+        public async Task<DefaultReponse<UserModel>> refreshPassword(UserRerefreshPassword request)
+        {
+            DefaultReponse<UserModel> userreponse = new DefaultReponse<UserModel>();
+            try
+            {
+                UserModel usermodel = new UserModel();
 
+                var sql = $"select * from loginuser where username='{request.username}'";
+                var user = await getAsync(sql);
+
+                if (user.Count == 0)
+                {
+                    return await usercheckresponse(false, "NOT_FOUND_USER", 1, null);
+
+                }
+                var userrefresh = user.FirstOrDefault();
+
+                if (userrefresh != null)
+                {
+                    usermodel = userrefresh;
+
+                    var password = Decrpt(userrefresh.password);
+
+                    if (password != null)
+                    {
+                        if (request.oldpassword != password)
+                        {
+                            return await usercheckresponse(false, "OLD_PASSWORD_INCURRENT", 1, null);
+                        }
+                        var passwordbyte = Encrypt(request.newpassword);
+                        if (passwordbyte != null)
+                        {
+                            usermodel.password = passwordbyte;
+                            var updateuser = await updateUser(usermodel);
+                            if (updateuser)
+                            {
+                                return await usercheckresponse(true, "UPDATE_PASSWORD_SUCESS", 0, usermodel);
+                            }
+
+                        }
+
+                    }
+
+
+                }
+
+
+
+
+                return await usercheckresponse(false, "UPDATE_PASSWORD_FAILED", 0, null);
+            }
+            catch (Exception ex)
+            {
+                return await usercheckresponse(false, ex.Message, 0, null);
+            }
+
+        }
 
 
 
@@ -396,10 +499,29 @@ namespace LibraryServices
             {
                 throw;
             }
-
-
         }
+        public async Task<DefaultReponse<UserModel>> usercheckresponse(bool status, string message, int code, UserModel model)
+        {
+            DefaultReponse<UserModel> response = new DefaultReponse<UserModel>();
+            try
+            {
+                response.success = status;
+                response.message = message;
+                response.code = code;
+                response.result = model;
+                return response;
 
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+
+            }
+
+
+            response.result = null;
+            return response;
+        }
 
     }
 }

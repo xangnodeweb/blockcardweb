@@ -77,7 +77,7 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
             if (string.IsNullOrWhiteSpace(voucherreportrequest.datestart))
             {
                 refdatestart.Error = true;
-                refdatestart.ErrorText = "please enter datestart";
+                refdatestart.ErrorText = "ກະລຸນາປ້ອນວັນທີເລີ່ມຕົ້ນ";
                 loading = false;
                 StateHasChanged();
                 return;
@@ -85,7 +85,7 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
             if (string.IsNullOrWhiteSpace(voucherreportrequest.dateend))
             {
                 refdateend.Error = true;
-                refdateend.ErrorText = "please enter dateend";
+                refdateend.ErrorText = "ກະລຸນາປ້ອນວັນທີສິ້ນສຸດ";
                 loading = false;
                 StateHasChanged();
                 return;
@@ -207,6 +207,10 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
         public async Task ExportExcel()
         {
             var result = await ExportGenarate(js, blockcardmodel);
+            if (string.IsNullOrWhiteSpace(result))
+            {
+                return;
+            }
             await js.InvokeVoidAsync("exportexcel", "export.xlsx", result);
         }
         public async Task clearData()
@@ -222,6 +226,10 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
         }
         public static async Task<string> ExportGenarate(IJSRuntime ijsruntime, List<BlockCardReponse> collection)
         {
+            if (collection.Count == 0 )
+            {
+                return "";
+            }
 
             using (MemoryStream msReport = new MemoryStream())
             {

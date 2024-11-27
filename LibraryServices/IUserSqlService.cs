@@ -12,5 +12,6 @@ namespace LibraryServices
         Task<List<Supplier>> getSupplierTolist(string sql);
         Task getUser();
         Task<UserloginResponse> Loginuser(UserLogin request);
+        Task<DefaultReponse<UserModel>> refreshPassword(UserRerefreshPassword request);
     }
 }
