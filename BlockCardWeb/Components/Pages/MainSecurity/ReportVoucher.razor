@@ -9,12 +9,12 @@
 
             <MudItem Class="px-4 py-0 d-flex flex-column" xs="3">
                 <MudText> ວັນທີເລິ່ມຕົ້ນ </MudText>
-                <MudDatePicker Variant="Variant.Outlined" ShowToolbar="false" AnchorOrigin="Origin.BottomLeft" @ref="@refdatestart" TextChanged="valuedateStart" />
+                <MudDatePicker Variant="Variant.Outlined" ShowToolbar="false" DateFormat="yyyy-MM-dd" AnchorOrigin="Origin.BottomLeft"  @ref="refdatestart" TextChanged="valuedateStart" />
             </MudItem>
 
             <MudItem Class="px-4 py-0 d-flex flex-column" xs="3">
                 <MudText> ວັນທີສິ້ນສຸດ </MudText>
-                <MudDatePicker Variant="Variant.Outlined" ShowToolbar="false" AnchorOrigin="Origin.BottomLeft" TextChanged="valuedateend" @ref="@refdateend" />
+                <MudDatePicker Variant="Variant.Outlined" ShowToolbar="false" AnchorOrigin="Origin.BottomLeft" TextChanged="valuedateend" @ref="refdateend" />
             </MudItem>
             <MudItem Class="px-4 py-0 d-flex flex-column" xs="3">
                 <MudText> ຜູ້ຜະລິດບັດ </MudText>
@@ -58,7 +58,7 @@
 
                 </MudSelect>
             </MudItem>
-            <MudItem xs="12" Class="px-4  pb-0 pt-5 d-flex align-items-center">
+            <MudItem xs="12" Class="px-4  pb-0 pt-5 d-flex align-items-center h-58-px">
                 <MudButton StartIcon="@Icons.Material.Filled.Search" OnClick="getreportVoucher" Class="bg-primary-btn   color-white fill-white w-120-px h-45-px"> ຄົ້ນຫາຂໍ້ມູນ  </MudButton>
                 <MudButton StartIcon="@Icons.Material.Filled.Refresh" OnClick="clearData" Class="bg-clear-btn color-white fill-white  w-120-px h-45-px ml-4"> ຍົກເລີກ  </MudButton>
             </MudItem>

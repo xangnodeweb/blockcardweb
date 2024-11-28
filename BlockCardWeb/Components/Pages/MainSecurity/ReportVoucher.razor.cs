@@ -231,8 +231,12 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
             voucherreportrequest.suppliername = "";
             voucherreportrequest.provincename = "";
             blockcardmodel = new List<BlockCardReponse>();
-            refdatestart.ClearAsync();
-            refdateend.ClearAsync();
+      
+       
+            refdatestart.ClearAsync(false);
+            refdateend.ClearAsync(false);
+            btnshow = false;
+            await InvokeAsync(StateHasChanged);
 
         }
         public static async Task<string> ExportGenarate(IJSRuntime ijsruntime, List<BlockCardReponse> collection)

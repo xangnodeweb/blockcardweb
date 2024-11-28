@@ -6,7 +6,9 @@
 .h-74-vh {
     height: 74vh;
 }
-
+.h-55-px{
+    height : 55px;
+}
 .h-83-px {
     height: 83px;
 }
@@ -36,6 +38,10 @@
 
 .h-50-px {
     height: 50px;
+}
+
+.h-58-px{
+    height : 58px;
 }
 
 .h-60-px {
@@ -318,10 +324,16 @@
     padding-left: 20px;
 }
 
+.px-6{
+    padding : 0 23px;
+}
+
 .px-4 {
     padding-left: 16px;
     padding-right: 16px;
 }
+
+
 
 .px-0 {
     padding-right: 0;
@@ -418,6 +430,10 @@
     border-radius: 25px;
 }
 
+.border-radius-30-px{
+    border-radius : 30px;
+}
+
 
 .border-radius-50 {
     border-radius: 50%;
@@ -488,6 +504,10 @@
 .bg-yellow-clear {
     background: #fec107;
 }
+.bg-block{
+
+    background : #e46a76;
+}
 
 .text-white {
     color: #FFF;
@@ -511,6 +531,10 @@
 .color-red{
     color : #F44336;
 }
+.color-block{
+    color : #e46a76;
+}
+
 
 .fill-white {
     fill: #FFF;
