@@ -10,6 +10,7 @@ using Newtonsoft.Json.Linq;
 using MudBlazor;
 using System.Diagnostics;
 using Castle.Facilities.TypedFactory.Internal;
+using LibraryServices;
 
 namespace BlockCardWeb.Components.Pages.MainSecurity
 {
@@ -22,6 +23,16 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
         public bool btnstatus { get; set; } = false;
         public MudNumericField<string> refbs = new MudNumericField<string>();
         public bool? loading { get; set; } = false;
+
+        public UserSqlService userSqlService = new UserSqlService();
+        public List<Supplier> suppliermodel = new List<Supplier>();
+        public List<Province> provincemodel = new List<Province>();
+        protected override async Task OnInitializedAsync()
+        {
+       
+
+        }
+
         public async Task QueryVoucherBs()
         {
             try
@@ -205,6 +216,33 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
             loading = false;
             StateHasChanged();
         }
+
+        public async Task onBlockCardDialog()
+        {
+            if (queryvoucher != null)
+            {
+                if (string.IsNullOrWhiteSpace(queryvoucher.SerialNo))
+                {
+                    return;
+                }
+                if (string.IsNullOrWhiteSpace(queryvoucher.FaceValue))
+                {
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(queryvoucher.CardStopDate))
+                {
+                    return;
+                }
+            }
+
+
+            DialogParameters dialogparameter = new DialogParameters() { ["messagecontent"] = "" , ["queryvouchermodel"] = queryvoucher };
+            Dialog.Show<DialogBlockCard>("custom option dialog", dialogparameter, new DialogOptions (){ NoHeader = true });
+
+
+        }
+      
         public async Task<string> checkflied(JToken value)
         {
             try

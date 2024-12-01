@@ -1,6 +1,7 @@
 ﻿using Blazored.LocalStorage;
 using LibraryServices.Model;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using System.IdentityModel.Tokens.Jwt;
 using System.Runtime.InteropServices;
 
@@ -10,7 +11,7 @@ namespace BlockCardWeb.Components.Pages.ViewMain
     {
 
         [Inject] public ILocalStorageService Localstorage { get; set; }
-
+        [Inject] public IJSRuntime js { get;set; }
         [Parameter] public RenderFragment authorize { get; set; }
         [Parameter] public RenderFragment noauthorize { get; set; }
         [Parameter] public EventCallback<UserClaim> username { get; set; }
@@ -27,12 +28,12 @@ namespace BlockCardWeb.Components.Pages.ViewMain
 
                 JwtSecurityTokenHandler hand = new JwtSecurityTokenHandler();
 
-                token = await Localstorage.GetItemAsync<string>("token");
+               token = await Localstorage.GetItemAsync<string>("token");
+
+
                 if (string.IsNullOrWhiteSpace(token))
                 {
                     mainpage = 1;
-
-
                 }
                 else
                 {
@@ -79,6 +80,13 @@ namespace BlockCardWeb.Components.Pages.ViewMain
             {
                 Console.WriteLine(ex.Message);
             }
+        }
+
+        public async Task logout()
+        {
+            await Localstorage.RemoveItemAsync("token");
+            mainpage = 1;
+            await InvokeAsync(StateHasChanged);
 
         }
 

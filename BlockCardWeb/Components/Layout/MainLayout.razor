@@ -22,7 +22,7 @@
                 <MudPaper Class="w-100 h-100-vh bg-white d-flex border-radius-0 overflow-hidden" Elevation="0">
 
                     <MudPaper Class="main-slidebar" Elevation="0">
-                        <MudContainer Class="bg-default px-0">
+                        <MudContainer Class="bg-default  px-0">
                             <MudCard Elevation="0" Class="w-100  bg-opacity-bg cursor-pointer  h-83-px d-flex align-items-center flex-row div-tappage border-radius-0">
                                 <i class="ti ti-wallet f-30-px"> </i>
                                 <div class="d-flex align-items-center nav-lb" @onclick=@(() => linkto("/" , 0))>
@@ -68,8 +68,8 @@
                     </MudPaper>
                     <MudPaper Class="home-section" Elevation="0">
 
-                        <MudCard Class="w-100 bg-default border-radius-0 d-flex align-items-center justify-content-between box-shadow-none h-83-px flex-row" Elevation="0">
-                            <MudCard Elevation="0" Class="w-60-px p-20  bg-default justify-content-center align-items-center d-flex box-shadow-none btn-menu ">
+                        <MudCard Class="w-100   border-radius-0 d-flex align-items-center justify-content-between box-shadow-none h-83-px flex-row bg-default" Elevation="0">
+                            <MudCard Elevation="0" Class="w-60-px p-20   justify-content-center align-items-center d-flex box-shadow-none btn-menu  bg-default">
                                 <i class="fa fa-chevron-right f-23-px color-white"> </i>
                             </MudCard>
                             <MudCard Class="d-flex align-items-center h-100 bg-none border-radius-0 flex-row" Elevation="0">
@@ -309,9 +309,11 @@
     }
 
     .flex-basis-none {
-        flex-basis: nione;
+        flex-basis: none;
     }
+^
 
+   
 </style>
 
 @code {
@@ -383,8 +385,8 @@
                 }
 
             }
-            StateHasChanged();
         }
+            StateHasChanged();
 
     }
     public async Task UserclaimLoad(UserClaim model)

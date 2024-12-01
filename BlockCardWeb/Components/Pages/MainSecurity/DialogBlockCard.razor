@@ -1,0 +1,113 @@
+﻿@rendermode InteractiveServer
+<MudDialog>
+    <DialogContent>
+        <MudPaper Class="w-100 bg-none d-flex flex-column" Elevation="0">
+
+            <MudText Class="f-20-px font-w-bold"> Block Card Infomation </MudText>
+            <MudText Class="f-18-px mt-5 lb-text"> ເລກທີ B/S ລູກຄ້າ  </MudText>
+            @if (queryvouchermodel != null)
+            {
+                if (!string.IsNullOrWhiteSpace(queryvouchermodel.SerialNo))
+                {
+                    <MudTextField T="string" Variant="Variant.Text" ReadOnly="true" Value="@queryvouchermodel.SerialNo" Class="w-100 f-21-px color-text-dialog text-dialog" />
+                }
+                else
+                {
+                    <MudTextField T="string" Variant="Variant.Text" ReadOnly="true" Class="w-100 f-21-px color-text-dialog text-dialog" />
+                }
+            }
+
+
+            <MudText Class="f-18-px mt-5 lb-text">  ຍອດເງິນໜ້າບັດ  </MudText>
+            @if (queryvouchermodel != null)
+            {
+                if (!string.IsNullOrWhiteSpace(queryvouchermodel.FaceValue))
+                {
+                    <MudTextField T="string" Variant="Variant.Text" ReadOnly="true" Value="@queryvouchermodel.FaceValue" Format="#,###" Class="w-100 f-21-px color-text-dialog text-dialog" />
+                }
+                else
+                {
+                    <MudTextField T="string" Variant="Variant.Text" ReadOnly="true" Class="w-100 f-21-px color-text-dialog text-dialog" />
+                }
+            }
+            <MudText Class="f-18-px mt-5  lb-text">  ວັນໝົດອາຍຸ </MudText>
+
+            @if (queryvouchermodel != null)
+            {
+                if (!string.IsNullOrWhiteSpace(queryvouchermodel.CardStopDate))
+                {
+                    <MudTextField T="string" Variant="Variant.Text" ReadOnly="true" Value="@queryvouchermodel.CardStopDate" Class="w-100 f-21-px color-text-dialog text-dialog" />
+                }
+                else
+                {
+                    <MudTextField T="string" Variant="Variant.Text" ReadOnly="true" Class="w-100  color-text-dialog text-dialog" />
+                }
+            }
+
+            <MudText Class="f-18-px mt-5 lb-text">  ເລກທີ B/S ປ່ຽນແທນ </MudText>
+            <MudNumericField T="string" Variant="Variant.Text" HideSpinButtons="true" Pattern=@("[0-9]") Class="w-100 color-text-dialog text-dialog " />
+            <MudText Class="f-18-px mt-5 lb-text">  ໝາຍເລກຕິດຕໍ່ລູກຄ້າ </MudText>
+            <MudNumericField  T="string" HideSpinButtons="true" Variant="Variant.Text" Pattern=@("[0-9]") Class="w-100 color-text-dialog text-dialog" />
+            <MudText Class="f-18-px mt-5 lb-text">  ຜູ້ຜະລິດບັດ </MudText>
+            <MudSelect T="string" AnchorOrigin="Origin.BottomCenter">
+
+                <MudSelectItem Value=@("")> ເລືອກຜູ້ຜະລິດ  </MudSelectItem>
+                @if (suppliermodel.Count > 0)
+                {
+                    foreach(var item in suppliermodel)
+                    {
+                        <MudSelectItem Value=@($"{item.supplier_name}")> @item.supplier_name </MudSelectItem>
+                    }
+                }
+            </MudSelect>
+            <MudText Class="f-18-px mt-5 lb-text">  ແຂວງ </MudText>
+            <MudSelect T="string" AnchorOrigin="Origin.BottomCenter">
+
+                <MudSelectItem Value=@("")> ເລືອກແຂວງ  </MudSelectItem>
+                @if (provincemodel.Count > 0)
+                {
+                    foreach (var item in provincemodel)
+                    {
+                        <MudSelectItem Value=@($"{item.provincename}")> @item.provincename </MudSelectItem>
+                    }
+                }
+            </MudSelect>
+            <MudText Class="f-18-px mt-5 lb-text">  ເຫດຜົນຂອງການປ່ຽນ </MudText>
+            <MudSelect T="string" AnchorOrigin="Origin.BottomCenter" >
+                <MudSelectItem Value=@("")> ເລືອກເຫດຜົນ  </MudSelectItem>
+            </MudSelect>
+            <MudCard Class="bg-none w-100 d-flex flex-row justify-content-between pt-5" Elevation="0">
+                <MudButton Class="bg-save h-50-px color-white f-20-px w-40 border-radius-25-px">  <MudIcon Icon="@Icons.Material.Outlined.Save" /> ບັນທຶກ </MudButton>
+                <MudButton Class="bg-blockcard-clear  h-50-px  color-white f-20-px w-40 border-radius-25-px"> <MudIcon Icon="@Icons.Material.Outlined.RestartAlt" @onclick="() => Close()" />  ຍົກເລີກ </MudButton>
+
+
+            </MudCard>
+        </MudPaper>
+
+    </DialogContent>
+
+
+</MudDialog>
+
+<style>
+
+    .mud-dialog-width-sm {
+        width: 515px;
+        min-width: 450px;
+        max-width: 600px;
+    }
+
+    .text-dialog .mud-input > input.mud-input-root, div.mud-input-slot.mud-input-root {
+        font-size: 21px;
+        padding : 15px 7px;
+        color : #4f5467;
+    }
+    .lb-text{
+        color: #212529;
+    }
+
+</style>
+
+@code {
+
+}

@@ -88,7 +88,9 @@
 .w-40{
     width : 40%;
 }
-
+.w-515-px{
+    width : 515px;
+}
 .w-110-px {
     width: 110px;
 }
@@ -173,6 +175,11 @@
 .f-55-px{
     font-size : 55px;
 }
+
+.f-60-px{
+    font-size: 60px;
+}
+
 .f-70-px {
     font-size: 70px;
 }
@@ -188,7 +195,9 @@
 .font-w-600 {
     font-weight: 600;
 }
-
+.font-w-bold{
+    font-weight : 900;
+}
 .pt-6 {
     padding-top: 24px;
 }
@@ -471,8 +480,14 @@
     max-width : none;
 }
 
+
+.min-width-450-px{
+    min-width : 450px;
+}
+
+
 .bg-default {
-    background: #01c0c8;
+    background-color: #01c0c8;
 }
 
 .bg-home-section {
@@ -509,6 +524,13 @@
     background : #e46a76;
 }
 
+.bg-save{
+    background-color : #03a9f3;
+}
+.bg-blockcard-clear{
+    background-color : #FEC107;
+}
+
 .text-white {
     color: #FFF;
 }
@@ -534,7 +556,9 @@
 .color-block{
     color : #e46a76;
 }
-
+.color-text-dialog{
+    color: #4F5467;
+}
 
 .fill-white {
     fill: #FFF;

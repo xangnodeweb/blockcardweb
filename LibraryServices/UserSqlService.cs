@@ -259,33 +259,36 @@ namespace LibraryServices
 
         }
 
-        public async Task genaratemodel()
+        public async Task<List<Supplier>> getsupplierddialog(string sql)
         {
             try
             {
+                var connstring = "Host=172.28.17.243;Username=postgres;Password=12345678;Database=UVC_BlockCard";
 
+                List<Supplier> modes = new List<Supplier>();
+                Console.WriteLine(modes);
+                await using var conn = new NpgsqlConnection(connstring);
+                await conn.OpenAsync();
 
-
-
+                await using (var cmd = new NpgsqlCommand(sql, conn))
+                await using (var reader = await cmd.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        modes.Add(new Supplier { supplier_id = Convert.ToInt32(reader["supplier_id"]), supplier_name = reader["supplier_name"].ToString() });
+                    }
+                }
+                return modes;
             }
             catch (Exception ex)
             {
-                throw;
+                Console.WriteLine(ex);
+                if (ex != null)
+                {
+                    Console.WriteLine(ex);
+                }
             }
-
-        }
-
-        public async Task createUser(UserModel request)
-        {
-            try
-            {
-
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
+            return new List<Supplier>();
         }
         public async Task<UserloginResponse> Loginuser(UserLogin request)
         {
@@ -387,30 +390,16 @@ namespace LibraryServices
                             {
                                 return await usercheckresponse(true, "UPDATE_PASSWORD_SUCESS", 0, usermodel);
                             }
-
                         }
-
                     }
-
-
                 }
-
-
-
-
                 return await usercheckresponse(false, "UPDATE_PASSWORD_FAILED", 0, null);
             }
             catch (Exception ex)
             {
                 return await usercheckresponse(false, ex.Message, 0, null);
             }
-
         }
-
-
-
-
-
 
         // create genarate or decrypt password
         public readonly string passwordHash = "#02091990#P@@Sw0rd_XXXX";
