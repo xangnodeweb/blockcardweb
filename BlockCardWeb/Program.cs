@@ -1,5 +1,6 @@
 using Blazored.LocalStorage;
 using BlockCardWeb.Components;
+using BlockCardWeb.Components.Export;
 using LibraryServices;
 using MudBlazor.Services;
 
@@ -13,6 +14,7 @@ builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddMudServices();
 builder.Services.AddScoped<IUserSqlService, UserSqlService>();
 builder.Services.AddScoped<ExportExcel>();
+builder.Services.AddScoped<UserService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
