@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Components.Web;
 using System.Text.Json;
 using System.Linq;
 using MudBlazor;
+
 namespace BlockCardWeb.Components.Pages.MainSecurity
 {
     public partial class ReportVoucher
@@ -248,7 +249,7 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
 
             using (MemoryStream msReport = new MemoryStream())
             {
-
+                
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
                 using var package = new ExcelPackage();
                 ExcelWorksheet ws = package.Workbook.Worksheets.Add("Sheet1");
