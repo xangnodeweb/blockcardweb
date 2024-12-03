@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\style\style-document.css" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Components\Pages\Export\" />
     <Folder Include="wwwroot\image\" />
   </ItemGroup>

@@ -13,7 +13,7 @@
 <MudSnackbarProvider />
 <div class="page">
 
-    <BlockCardWeb.Components.Pages.ViewMain.CustomViewMain username="(args) => UserclaimLoad(args)">
+    <BlockCardWeb.Components.Pages.ViewMain.CustomViewMain username="(args) => UserclaimLoad(args.Item1 , args.Item2)">
 
         <authorize>
             @* <BlockCardWeb.Components.Pages.MainPagebar /> *@
@@ -80,7 +80,7 @@
                                     {
                                         <MudText Class="lb-name"> @userClaim.username - @userClaim.firstname @userClaim.lastname </MudText>
                                     }
-       
+
                                 }
                                 else
                                 {
@@ -312,8 +312,6 @@
         flex-basis: none;
     }
 
-
-   
 </style>
 
 @code {
@@ -326,20 +324,24 @@
     protected override async Task OnInitializedAsync()
     {
 
-        var paths = nav.BaseUri.Split("/");
+        // var paths = nav.BaseUri.Split("/");
+        var paths = nav.Uri.Substring(nav.BaseUri.Length - 1);
         if (paths != null)
         {
-            if (paths.Length > 0)
+
+            if (paths == "/")
             {
-                if (paths[3] == "")
-                {
-                    pathmain = 0;
-                }
-                else
-                {
-                    pathmain = 1;
-                }
+                pathmain = 0;
+                clearmain();
+            }else if (paths == "/reportvoucher")
+            {
+                pathmain = 2;
             }
+            else
+            {
+                // pathmain = 1;
+            }
+
         }
 
 
@@ -356,10 +358,23 @@
             nav.NavigateTo("", true);
             return;
         }
+        if (url == "/reportvoucher")
+        {
+            await js.InvokeVoidAsync("localStorage.setItem", "mainreport", true);
+            nav.NavigateTo(url , true);
+            await js.InvokeAsync<string>("pathlocal");
+
+            return;
+        }
         nav.NavigateTo(url);
         var paths = nav.BaseUri.Split("/");
         StateHasChanged();
         var pathss = nav.Uri.Substring(nav.BaseUri.Length - 1);
+
+
+
+
+
 
         var pathurl = await js.InvokeAsync<string>("pathlocal");
         if (pathurl != null)
@@ -386,12 +401,25 @@
 
             }
         }
-            StateHasChanged();
-
+        StateHasChanged();
     }
-    public async Task UserclaimLoad(UserClaim model)
+
+
+    public async Task UserclaimLoad(UserClaim model , int? pathmains)
     {
         userClaim = model;
+        if (pathmains != null)
+        {
+            pathmain = pathmains;
+        }
+        StateHasChanged();
+    }
+    public async Task clearmain()
+    {
+        if (pathmain == 0)
+        {
+            await js.InvokeVoidAsync("localStorage.setItem", "mainreport", false);
+        }
     }
 
     public async Task logout()

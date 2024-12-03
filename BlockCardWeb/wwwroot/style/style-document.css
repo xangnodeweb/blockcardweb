@@ -1,0 +1,60 @@
+﻿.div-header {
+    width: 100%;
+    text-align: center;
+}
+
+* {
+    font-family: "Noto sans Lao"
+}
+
+table thead tr th {
+    font-size: 10;
+}
+
+table tbody tr td {
+    font-size: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    table thead tr {
+        border: 1px solid black;
+    }
+
+    table th, table td {
+        border: 1px solid black;
+        text-align: center;
+    }
+
+    table tr th {
+        padding: 4px 0
+    }
+
+div-detail-model span {
+    font-size: 16px;
+}
+
+div-count {
+    display: flex;
+    align-items: center;
+}
+
+    div-count span {
+        font-size: 16px;
+    }
+
+@media screen {
+    * {
+        font-family: 'Noto Sans Lao'
+    }
+}
+
+@media print {
+    * {
+        font-family: 'Noto Sans Lao'
+    }
+}
+

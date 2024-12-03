@@ -34,8 +34,8 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
         public string? keyValuesear = "";
         public bool? btnshow = false;
 
-        public MudDatePicker refdatestart = new MudDatePicker(); 
-        public MudDatePicker refdateend = new MudDatePicker(); 
+        public MudDatePicker refdatestart = new MudDatePicker();
+        public MudDatePicker refdateend = new MudDatePicker();
 
         protected override async Task OnInitializedAsync()
         {
@@ -162,7 +162,7 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
             if (!string.IsNullOrWhiteSpace(value))
             {
                 Console.WriteLine(JsonSerializer.Serialize(blockcardmodel));
-                blockcardmodel = blockmodellist.Where(x => x.bs_old.Contains(value)).ToList();
+                blockcardmodel = blockmodellist.Where(x => x.bs_old.Contains(value) || x.facevalue.Contains(value) || x.bs_new.Contains(value) || x.msisdn.Contains(value) || x.supplier_name.Contains(value) || x.province.Contains(value)).ToList();
                 await InvokeAsync(StateHasChanged);
             }
             else if (string.IsNullOrWhiteSpace(value))
@@ -176,7 +176,7 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
         public async Task ChangeValue(KeyboardEventArgs value)
         {
             await Task.Delay(50);
-    
+
             if (value.Key != null)
             {
                 //Console.WriteLine(keyValuesear);
@@ -232,8 +232,8 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
             voucherreportrequest.suppliername = "";
             voucherreportrequest.provincename = "";
             blockcardmodel = new List<BlockCardReponse>();
-      
-       
+
+
             refdatestart.ClearAsync(false);
             refdateend.ClearAsync(false);
             btnshow = false;
@@ -242,14 +242,14 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
         }
         public static async Task<string> ExportGenarate(IJSRuntime ijsruntime, List<BlockCardReponse> collection)
         {
-            if (collection.Count == 0 )
+            if (collection.Count == 0)
             {
                 return "";
             }
 
             using (MemoryStream msReport = new MemoryStream())
             {
-                
+
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
                 using var package = new ExcelPackage();
                 ExcelWorksheet ws = package.Workbook.Worksheets.Add("Sheet1");
@@ -279,5 +279,37 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
                 return Convert.ToBase64String(msReport.ToArray());
             }
         }
+        public async Task PdfPrint()
+        {
+            var td = "";
+            DateTime datestart = Convert.ToDateTime(voucherreportrequest.datestart);
+            DateTime dateend = Convert.ToDateTime(voucherreportrequest.dateend);
+     
+            var date = datestart.ToString("dd/MM/yyyy") + " ຫາວັນທີ " + dateend.ToString("dd/MM/yyyy");
+            if (blockcardmodel.Count > 0)
+            {
+                if (blockcardmodel.Count > 500)
+                {
+
+                }
+                else
+                {
+                    for (var i = 0; i < 50; i++)
+                    {
+                        foreach (var item in blockcardmodel)
+                        {
+                            td += $"<tr> <td> {item.bs_old}</td><td> {item.facevalue} </td><td> {item.expire_date} </td><td> {item.bs_new} </td><td> {item.msisdn} </td><td> {item.supplier_name}  </td><td> {item.province} </td><td> {item.remark} </td><td> {item.create_user} </td><td> {item.create_time} </td> </tr>";
+
+                        }
+                    }
+                }
+
+
+            }
+
+            await js.InvokeAsync<List<BlockCardReponse>>("printpdf",blockcardmodel , blockcardmodel.Count, date);
+
+        }
+
     }
 }

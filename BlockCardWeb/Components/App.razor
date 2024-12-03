@@ -16,6 +16,8 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="./style/style.css" type="text/css" />
+
+
     <HeadOutlet />
 </head>
 
@@ -43,7 +45,16 @@
     </script>
     <script>
         function pathlocal() {
+            var paths = localStorage.getItem("mainreport");
+            console.log(paths);
+            if (paths != null) {
+                if (paths == true) {
+                    console.log(paths)
+                    // window.location.reload();
+                    return;
 
+                }
+            }
             const path = window.location.href;
             console.log(path)
             return path
@@ -61,7 +72,68 @@
 
         }
 
+
     </script>
+    <script type="text/javascript">
+
+        async function printpdf(model, modelcount, datetime) {
+
+            try {
+
+                console.log(model);
+                console.log('print');
+
+                if (model.length == 0) {
+                    return;
+                }
+                let td = '';
+                if (model.length > 0) {
+
+                    for (var i = 0; i < model.length; i++) {
+
+                        var index = i;
+                        td += `<tr> <td> ${model[index].bs_old}</td><td> ${model[index].facevalue} </td><td> ${model[index].expire_date} </td><td> ${model[index].bs_new} </td><td> ${model[index].msisdn} </td><td> ${model[index].supplier_name}  </td><td> ${model[index].province} </td><td> ${model[index].remark} </td><td> ${model[index].create_user} </td><td> ${model[index].create_time} </td> </tr>`;
+                    }
+                }
+
+                console.log(td);
+
+
+                let th = '<tr> <th> B/S ລູກຄ້າ </th> <th> ຍອດເງິນໜ້າບັດ </th> <th> ວັນໝົດອາຍຸບັດ </th> <th> B/s ປ່ຽນແທນ </th> <th> ເບີໂທຕິດຕໍ່ </th> <th> ຜູ້ຜະລິດບັດ </th> <th> ແຂວງ </th> <th>ສາເຫດ </th> <th> Create User </th> <th> Create Time </th> </tr>'
+                let table = '<table>' + "<thead> " + th + "</thead> " + "<tbody>" + td + "</tbody>" + '</table>'
+                // let headercount = '<div class="div-detail-model" style="display: flex; flex-direction : column;  align-items: start;"> <div class="div-count" >  <span> ລາຍງານຂໍ້ມູນຈຳນວນ: ' + modelcount + ' ລາຍການ' + ' </span> </div> <div class="div-count">  <span> ຂໍ້ມູນວັນທີ : ' + datetime + ' </span>  </div>  </div>' + " <br /> " + table;
+
+                const wins = window.open('', '');
+
+                wins.document.head.innerHTML = '<title> print </title>' + '<link rel="stylesheet" href="./app.css" media="print" />' + '  <link rel="stylesheet" href="./style/style-document.css" type="text/css" />' + '<link rel="stylesheet" href="./font/NotoSansLao-Regular.ttf" type="text/css" />';
+                wins.document.body.innerHTML = "<div class='div-header'>  <span> ລາຍງານ Block Card  </span> <div>" + "" + table + "" + " </div> </div>";
+                // <style> .div - header { width: 100 %; text - align: center; } * { font- family : 'Noto Sans Lao'
+                // } table thead tr th{ font - size : 10px; } table tbody tr td{ font - size : 10px; } table{ width: 100 %; border - collapse: collapse; } table thead tr { border: 1px solid black; } table th, table td { border: 1px solid black; text - align: center; } table tr th { padding: 4px 0 } div - detail - model span{ font - size: 16px; } div - count{ display: flex; align - items: center; } div - count span{ fotn - size: 16px; } </style>
+
+
+                wins.focus();
+                wins.print();
+                wins.close();
+
+            } catch (error) {
+                console.log(error);
+
+            }
+
+
+        }
+        async function sleeps() {
+            try {
+                console.log("delay ")
+                await new Promise(res => setTimeout(res, 2000));
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+
+    </script>
+
     <script>
 
         $(document).ready(function () {
@@ -73,21 +145,14 @@
                     top: 60,
                     left: 30,
                     right: 30,
-                    arguments ; 60,
+                    // arguments ; 60
                     width: 540
                 };
 
                 var pdf = new jsPDF('p', 'pt', 'a4');
                 pdf.setFontSize(24);
-
-
-
             })
-
-
-
         })
-
     </script>
 </body>
 

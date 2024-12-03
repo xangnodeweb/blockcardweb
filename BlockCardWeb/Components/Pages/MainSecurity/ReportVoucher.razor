@@ -9,7 +9,7 @@
 
             <MudItem Class="px-4 py-0 d-flex flex-column" xs="3">
                 <MudText> ວັນທີເລິ່ມຕົ້ນ </MudText>
-                <MudDatePicker Variant="Variant.Outlined" ShowToolbar="false" DateFormat="yyyy-MM-dd" AnchorOrigin="Origin.BottomLeft"  @ref="refdatestart" TextChanged="valuedateStart" />
+                <MudDatePicker Variant="Variant.Outlined" ShowToolbar="false" DateFormat="dd-MM-yyyy" AnchorOrigin="Origin.BottomLeft"  @ref="refdatestart" TextChanged="valuedateStart" />
             </MudItem>
 
             <MudItem Class="px-4 py-0 d-flex flex-column" xs="3">
@@ -83,7 +83,7 @@
                 <MudCard Class="w-100 border-radius-0 d-flex flex-row justify-content-between pr-5 pt-4  pb-3" Elevation="0">
                     <MudCard Class="bg-none border-radius-0  d-flex flex-row pl-3 pt-3 " Elevation="0">
                         <MudButton OnClick="ExportExcel" Class="bg-export w-100-px h-47-px border-1-solid">Export</MudButton>
-                        <MudButton Class="bg-export w-100-px h-47-px border-1 ml-3 border-1-solid">Print</MudButton>
+                        <MudButton Class="bg-export w-100-px h-47-px border-1 ml-3 border-1-solid" OnClick="PdfPrint">Print</MudButton>
                     </MudCard>
                     <MudCard Class="border-radius-0 bg-none flex-row align-items-center" Elevation="0">
                         <MudText> Search :    </MudText>

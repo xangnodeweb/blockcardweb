@@ -11,10 +11,12 @@ namespace BlockCardWeb.Components.Pages.ViewMain
     {
 
         [Inject] public ILocalStorageService Localstorage { get; set; }
-        [Inject] public IJSRuntime js { get;set; }
+        [Inject] public IJSRuntime js { get; set; }
+        [Inject] public NavigationManager nav { get; set; }
         [Parameter] public RenderFragment authorize { get; set; }
         [Parameter] public RenderFragment noauthorize { get; set; }
-        [Parameter] public EventCallback<UserClaim> username { get; set; }
+        [Parameter] public EventCallback<(UserClaim , int?)> username { get; set; }
+
         public UserClaim userclaim = new UserClaim();
         public int? mainpage { get; set; } = 0;
         public string? token { get; set; }
@@ -28,7 +30,7 @@ namespace BlockCardWeb.Components.Pages.ViewMain
 
                 JwtSecurityTokenHandler hand = new JwtSecurityTokenHandler();
 
-               token = await Localstorage.GetItemAsync<string>("token");
+                token = await Localstorage.GetItemAsync<string>("token");
 
 
                 if (string.IsNullOrWhiteSpace(token))
@@ -72,7 +74,8 @@ namespace BlockCardWeb.Components.Pages.ViewMain
                         userclaim.lastname = tokens.Claims.FirstOrDefault(x => x.Type == "lastname").Value;
                         userclaim.role = tokens.Claims.FirstOrDefault(x => x.Type == "role").Value;
                         userclaim.section = tokens.Claims.FirstOrDefault(x => x.Type == "section").Value;
-                        await username.InvokeAsync(userclaim);
+                        var path = await checkpath();
+                        await username.InvokeAsync((userclaim , path));
                     }
                 }
             }
@@ -89,6 +92,17 @@ namespace BlockCardWeb.Components.Pages.ViewMain
             await InvokeAsync(StateHasChanged);
 
         }
-
+        public async Task<int?> checkpath()
+        {
+            var path = nav.Uri.Substring(nav.BaseUri.Length - 1);
+            if (path != null)
+            {
+                if (path == "/reportvoucher")
+                {
+                    return 2;
+                }
+            }
+            return null;
+        }
     }
 }
