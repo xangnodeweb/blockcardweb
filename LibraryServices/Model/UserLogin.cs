@@ -29,9 +29,9 @@ namespace LibraryServices.Model
 
     public class UserloginResponse
     {
-        public bool? success { get; set; }
+        public bool? success { get; set; } = false;
         public int? code { get; set; } = 0;
-        public string? message { get; set; }
+        public string? message { get; set; } = "";
         public string? result { get; set; }
 
     }

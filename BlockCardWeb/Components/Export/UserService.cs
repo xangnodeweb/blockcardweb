@@ -10,6 +10,8 @@ using iTextSharp.text;
 using Microsoft.AspNetCore.Http.Headers;
 using NPOI.SS.UserModel;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using iTextSharp.text.pdf.qrcode;
+using static iTextSharp.text.pdf.PdfSigGenericPkcs;
 
 namespace BlockCardWeb.Components.Export
 {
@@ -17,6 +19,7 @@ namespace BlockCardWeb.Components.Export
     {
         private readonly string url = "http://10.30.6.120:8081/srv_uvc.asmx";
         public readonly string urlblockcard = "http://172.28.236.57:8080/services/UvcServices";
+
         public async Task<DefaultReponse<List<Supplier>>> getSupplier()
         {
             DefaultReponse<List<Supplier>> response = new DefaultReponse<List<Supplier>>();
@@ -95,6 +98,8 @@ namespace BlockCardWeb.Components.Export
                 }
                 XmlDocument docxml = new XmlDocument();
                 var bodyxml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" + "<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">" + " <soap12:Body>\r\n    <qryVoucher xmlns=\"http://tempuri.org/\">" + $"<BS>{bs}</BS>" + "  </qryVoucher>  </soap12:Body></soap12:Envelope>";
+
+
                 HttpClient httpclient = new HttpClient();
                 HttpContent content = new StringContent(bodyxml, Encoding.UTF8, "text/xml");
                 httpclient.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/soap+xml;charset=utf-8");
@@ -265,19 +270,18 @@ namespace BlockCardWeb.Components.Export
                     return response;
                 }
 
-
-                var bodyxml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
-
-                    "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:uvc=\"http://www.huawei.com/bme/cbsinterface/uvcservices\" xmlns:uvc1=\"http://www.huawei.com/bme/cbsinterface/uvcheader\">" +
-                    "<soapenv:Header/>  <soapenv:Body><uvc:ModifyVoucherLockRequestMsg><RequestHeader> <uvc1:Version> 1 </uvc1:Version>   <uvc1:BusinessCode> CBS-test </uvc1:BusinessCode>" +
-                    "<uvc1:MessageSeq>${=(new java.text.SimpleDateFormat(\"yyyyMMddHHmmss\")).format(new Date())}${=(int)(Math.random() * 1000)}</uvc1:MessageSeq> <!--Optional:-->  <uvc1:AccessSecurity>  <uvc1:LoginSystemCode> APIGEEAPI </uvc1:LoginSystemCode>  <uvc1:Password> cdVOUWF+57KsMd57vH8D3H+ykq4CbeLtc8wCapSScPhjazQDDuTrFUP4sDBpyX+q</uvc1:Password>   <uvc1:RemoteIP>?</uvc1:RemoteIP></uvc1:AccessSecurity>   </RequestHeader>    <ModifyVoucherLockRequest> " +
-                    $"<uvc:SerialNoList> {serialNo}  </uvc:SerialNoList><uvc:OperationType>4</uvc:OperationType><!--Optional:-->  <uvc:OperationReason> sds </uvc:OperationReason>  </ModifyVoucherLockRequest> </uvc:ModifyVoucherLockRequestMsg>  </soapenv:Body></soapenv:Envelope>";
-                  
+            
                 
-                
+
+
+               // var bodyxml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" + "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:uvc=\"http://www.huawei.com/bme/cbsinterface/uvcservices\" xmlns:uvc1=\"http://www.huawei.com/bme/cbsinterface/uvcheader\">" + "    <soapenv:Header/>  <soapenv:Body><uvc:ModifyVoucherLockRequestMsg><RequestHeader> <uvc1:Version> 1 </uvc1:Version>                        <uvc1:BusinessCode> CBS_test </uvc1:BusinessCode>" + "<uvc1:MessageSeq>${=(new java.text.SimpleDateFormat(\"yyyyMMddHHmmss\")).format(new Date())}${=(int)(Math.random() * 1000)}</uvc1:MessageSeq>                    <uvc1:AccessSecurity>  <uvc1:LoginSystemCode> APIGEEAPI </uvc1:LoginSystemCode>         <uvc1:Password> cdVOUWF+57KsMd57vH8D3H+ykq4CbeLtc8wCapSScPhjazQDDuTrFUP4sDBpyX+q</uvc1:Password>   <uvc1:RemoteIP>?</uvc1:RemoteIP></uvc1:AccessSecurity>  </RequestHeader>   <ModifyVoucherLockRequest> " + $"<uvc:SerialNoList>{serialNo}</uvc:SerialNoList>     <uvc:OperationType>4</uvc:OperationType>                 <uvc:OperationReason> sds </uvc:OperationReason>  </ModifyVoucherLockRequest> </uvc:ModifyVoucherLockRequestMsg>  </soapenv:Body></soapenv:Envelope>";
+              var bodyxml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>     <soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:uvc=\"http://www.huawei.com/bme/cbsinterface/uvcservices\" xmlns:uvc1=\"http://www.huawei.com/bme/cbsinterface/uvcheader\">\r\n" + "<soapenv:Header/>  <soapenv:Body><uvc:ModifyVoucherLockRequestMsg><RequestHeader> <uvc1:Version> 1 </uvc1:Version>" + " < !--Optional:--> <uvc1:BusinessCode> UVC_test </uvc1:BusinessCode>     <uvc1:MessageSeq>${=(new java.text.SimpleDateFormat(\"yyyyMMddHHmmss\")).format(new Date())}${=(int)(Math.random() * 1000)}</uvc1:MessageSeq>   < !--Optional:--><uvc1:AccessSecurity>  <uvc1:LoginSystemCode> APIGEEAPI </uvc1:LoginSystemCode>\r\n" + "<uvc1:Password> cdVOUWF+57KsMd57vH8D3H+ykq4CbeLtc8wCapSScPhjazQDDuTrFUP4sDBpyX+q</uvc1:Password>   <uvc1:RemoteIP>?</uvc1:RemoteIP></uvc1:AccessSecurity>  </RequestHeader>   <ModifyVoucherLockRequest>       <uvc:SerialNoList>220927000000087</uvc:SerialNoList><uvc:OperationType>1</uvc:OperationType>< !--Optional:--><uvc:OperationReason> sds </uvc:OperationReason>< !--Optional:--></ModifyVoucherLockRequest></uvc:ModifyVoucherLockRequestMsg></soapenv:Body></soapenv:Envelope>"; 
+
+
                 HttpClient httpclient = new HttpClient();
                 HttpContent content = new StringContent(bodyxml, Encoding.UTF8, "text/xml");
-                httpclient.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/soap+xml;charset=utf-8");
+
+                httpclient.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "text/xml;charset=utf-8");
                 HttpResponseMessage responseclient = await httpclient.PostAsync(urlblockcard, content);
                 var model = responseclient.Content.ReadAsStringAsync().Result;
 

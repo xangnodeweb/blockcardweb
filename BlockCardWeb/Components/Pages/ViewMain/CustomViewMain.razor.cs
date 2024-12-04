@@ -87,8 +87,11 @@ namespace BlockCardWeb.Components.Pages.ViewMain
 
         public async Task logout()
         {
-            await Localstorage.RemoveItemAsync("token");
-            mainpage = 1;
+            if (!string.IsNullOrWhiteSpace(token))
+            {
+                await Localstorage.RemoveItemAsync("token");
+                mainpage = 1;
+            }
             await InvokeAsync(StateHasChanged);
 
         }

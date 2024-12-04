@@ -76,7 +76,7 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
                 var modes = await userService.getSupplier();
                 if (modes.result.Count > 0)
                 {
-                    suppliermodel = modes.result.OrderBy(x => x.supplier_id).ToList();
+                    suppliermodel = modes.result.OrderBy(x => Convert.ToInt32(x.supplier_id)).ToList();
                 }
 
             }
@@ -113,7 +113,7 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
                 var model = await userService.getProvince();
                 if (model.result.Count > 0)
                 {
-                    provincemodel = model.result.OrderBy(x => x.provinceid).ToList();
+                    provincemodel = model.result.OrderBy(x => Convert.ToInt32(x.provinceid)).ToList();
                 }
 
 

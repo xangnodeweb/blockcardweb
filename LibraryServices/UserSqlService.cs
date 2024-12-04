@@ -17,40 +17,65 @@ namespace LibraryServices
 {
     public class UserSqlService : IUserSqlService
     {
-        public async Task<List<UserModel>> getAsync(string sql)
-       {
-            //var connstring = "Host=127.0.0.1;Username=postgres;Password=123456789;Database=user";
-            var connstring = "Host=172.28.17.243;Username=postgres;Password=12345678;Database=UVC_BlockCard";
-
-            await using var conn = new NpgsqlConnection(connstring);
-            await conn.OpenAsync();
-
-            List<UserModel> userlogin = new List<UserModel>();
-            await using (var cmd = new NpgsqlCommand(sql, conn))
-            await using (var reader = await cmd.ExecuteReaderAsync())
+        public async Task<DefaultReponse<List<UserModel>>> getAsync(string sql)
+        {
+            DefaultReponse<List<UserModel>> response = new DefaultReponse<List<UserModel>>();
+            try
             {
-                while (reader.Read())
+                //var connstring = "Host=127.0.0.1;Username=postgres;Password=123456789;Database=user";
+                var connstring = "Host=172.28.17.243;Username=postgres;Password=12345678;Database=UVC_BlockCard";
+
+                await using var conn = new NpgsqlConnection(connstring);
+                await conn.OpenAsync();
+
+                List<UserModel> userlogin = new List<UserModel>();
+                await using (var cmd = new NpgsqlCommand(sql, conn))
+                await using (var reader = await cmd.ExecuteReaderAsync())
                 {
-                    userlogin.Add(new UserModel()
+                    while (reader.Read())
                     {
-                        //username = reader.GetString(0) , 
-                        //expire_password = reader.GetString(0),
-                        //password = reader.GetString(0),
-                        //first_name = reader.GetString(0),
-                        //last_name = reader.GetString(0),
-                        //role = reader.GetString(0),
-                        //section = reader.GetString(0),
-                        username = reader["username"].ToString(),
-                        expire_password = reader["expire_password"].ToString(),
-                        password = reader["password"].ToString(),
-                        first_name = reader["first_name"].ToString(),
-                        last_name = reader["last_name"].ToString(),
-                        role = reader["role"].ToString(),
-                        section = reader["section"].ToString(),
-                        last_login = reader["last_login"].ToString()
-                    });
+                        userlogin.Add(new UserModel()
+                        {
+                            //username = reader.GetString(0) , 
+                            //expire_password = reader.GetString(0),
+                            //password = reader.GetString(0),
+                            //first_name = reader.GetString(0),
+                            //last_name = reader.GetString(0),
+                            //role = reader.GetString(0),
+                            //section = reader.GetString(0),
+                            username = reader["username"].ToString(),
+                            expire_password = reader["expire_password"].ToString(),
+                            password = reader["password"].ToString(),
+                            first_name = reader["first_name"].ToString(),
+                            last_name = reader["last_name"].ToString(),
+                            role = reader["role"].ToString(),
+                            section = reader["section"].ToString(),
+                            last_login = reader["last_login"].ToString()
+                        });
+                    }
+                    if (userlogin.Count > 0)
+                    {
+                        response.success = true;
+                        response.result = userlogin;
+                    }
+                    else
+                    {
+                        response.success = false;
+                        response.message = "NOT_FOUND_USER";
+                        response.code = 1;
+                        response.result = new List<UserModel>();
+                    }
+
+                    return response;
                 }
-                return userlogin;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.message = "CANNOT_QUERY_USER";
+                response.code = 3;
+                response.result = new List<UserModel>();
+                return response;
             }
         }
 
@@ -292,19 +317,19 @@ namespace LibraryServices
         }
         public async Task<UserloginResponse> Loginuser(UserLogin request)
         {
+
+                UserloginResponse response = new UserloginResponse();
             try
             {
-                UserloginResponse response = new UserloginResponse();
                 //var sql = "select * from loginuser";
                 var sql = $"select * from UVC_LOGIN where username='{request.username}'";
 
-                List<UserModel> resultuser = await getAsync(sql);
+                DefaultReponse<List<UserModel>> resultuser = await getAsync(sql);
 
-                
-                if (resultuser.Count > 0)
+                if (resultuser.success == true && resultuser.result.Count > 0)
                 {
 
-                    var user = resultuser.FirstOrDefault(x => x.username == request.username);
+                    var user = resultuser.result.FirstOrDefault(x => x.username == request.username);
                     if (user != null)
                     {
                         var ispassword = Decrpt(user.password);
@@ -314,7 +339,6 @@ namespace LibraryServices
                             var token = await genarateToken(user);
                             if (!string.IsNullOrWhiteSpace(token))
                             {
-                                response.code = 0;
                                 response.message = "login_success";
                                 response.success = true;
                                 response.result = token;
@@ -324,30 +348,39 @@ namespace LibraryServices
                         {
                             response.code = 2;
                             response.message = "username and password incorrent.";
-                            response.success = false;
                         }
                     }
                     else
                     {
                         response.code = 1;
                         response.message = "NOT_FOUND_USER";
-                        response.success = false;
+                        response.result = null;
                     }
                 }
                 else
                 {
-                    response.code = 0;
-                    response.message = "LOGIN_FAILED";
-                    response.success = false;
+                    if (resultuser.code == 1 && resultuser.success == false)
+                    {
+                        response.result = null;
+                        response.code = 1;
+                        response.message = "NOT_FOUND_USER";
+                    }
+                    else
+                    {
+                        response.message = "LOGIN_FAILED";
+                   
+                    }
                 }
 
 
 
                 return response;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                response.code = 3;
+                response.message = "CANNOT_LOGIN_USER";
+                return response;
             }
         }
 
@@ -362,12 +395,12 @@ namespace LibraryServices
                 var sql = $"select * from loginuser where username='{request.username}'";
                 var user = await getAsync(sql);
 
-                if (user.Count == 0)
+                if (user.result.Count == 0)
                 {
                     return await usercheckresponse(false, "NOT_FOUND_USER", 1, null);
 
                 }
-                var userrefresh = user.FirstOrDefault();
+                var userrefresh = user.result.FirstOrDefault();
 
                 if (userrefresh != null)
                 {
@@ -504,18 +537,16 @@ namespace LibraryServices
                 response.code = code;
                 response.result = model;
                 return response;
-
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-
             }
-
-
             response.result = null;
             return response;
         }
+
+
 
     }
 }
