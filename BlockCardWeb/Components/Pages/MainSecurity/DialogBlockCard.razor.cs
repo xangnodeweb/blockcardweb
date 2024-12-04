@@ -14,8 +14,9 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
     public partial class DialogBlockCard
     {
         [Inject] public ILocalStorageService LocalStorage { get; set; }
+        [Inject] public IDialogService DialogShow { get; set; }
         [CascadingParameter] public MudDialogInstance Dialog { get; set; }
-        [Inject]public NavigationManager nav { get; set; }
+        [Inject] public NavigationManager nav { get; set; }
         [Parameter] public string messagecontent { get; set; }
         [Parameter] public QueryVoucherResponse queryvouchermodel { get; set; }
 
@@ -30,7 +31,7 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
             if (firstload)
             {
                 await Task.WhenAll(getSupplier(), getProvince(), geToken());
-               
+
                 if (queryvouchermodel != null)
                 {
                     if (!string.IsNullOrWhiteSpace(queryvouchermodel.SerialNo))
@@ -190,8 +191,16 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
             // query
             if (query_bs_new.success == true && query_bs_new.result != null) // check status voucher then HotCardFlag 0 bs_new == success if true next to send modify Voucher 1 == unclock voucher || Voucher 4 == lock voucher
             {
-
-                var resultblockcardlock = await userService.ModifyVoucher();
+                if (query_bs_new.result.HotCardFlag != "0")
+                {
+                    Dialog.Close();
+                    DialogParameters dialogparameter = new DialogParameters() { ["contentstring"] = "" };
+                    DialogShow.Show<DialogVoucher>("custom option dialog", dialogparameter, new DialogOptions() { NoHeader = true });
+                    return;
+                }
+            
+                var serialNo = "";
+                var resultblockcardlock = await userService.ModifyVoucher(blockcardrequest.bs_new);
 
 
                 //var resultblockcard = await userService.SaveBlockCardVoucher(blockcardrequest);
@@ -204,7 +213,7 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
         {
             if (value != null)
             {
-                blockcardrequest.suppliername =value;
+                blockcardrequest.suppliername = value;
             }
             await InvokeAsync(StateHasChanged);
         }
@@ -240,14 +249,15 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
 
                     if (tokenss.ValidTo <= DateTime.Now.AddMinutes(-15))
                     {
-                        nav.NavigateTo("/" , true);
+                        nav.NavigateTo("/", true);
                     }
                     else
                     {
-                    blockcardrequest.createuser = tokenss.Claims.FirstOrDefault(x => x.Type == "username").Value;
+                        blockcardrequest.createuser = tokenss.Claims.FirstOrDefault(x => x.Type == "username").Value;
                     }
                 }
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine(ex);
             }

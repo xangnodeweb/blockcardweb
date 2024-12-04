@@ -76,7 +76,7 @@
     </script>
     <script type="text/javascript">
 
-        async function printpdf(model, modelcount, datetime) {
+        async function printpdf(model) {
 
             try {
 
@@ -87,33 +87,25 @@
                     return;
                 }
                 let td = '';
-                if (model.length > 0) {
 
-                    for (var i = 0; i < model.length; i++) {
-
-                        var index = i;
-                        td += `<tr> <td> ${model[index].bs_old}</td><td> ${model[index].facevalue} </td><td> ${model[index].expire_date} </td><td> ${model[index].bs_new} </td><td> ${model[index].msisdn} </td><td> ${model[index].supplier_name}  </td><td> ${model[index].province} </td><td> ${model[index].remark} </td><td> ${model[index].create_user} </td><td> ${model[index].create_time} </td> </tr>`;
-                    }
-                }
-
-                console.log(td);
 
 
                 let th = '<tr> <th> B/S ລູກຄ້າ </th> <th> ຍອດເງິນໜ້າບັດ </th> <th> ວັນໝົດອາຍຸບັດ </th> <th> B/s ປ່ຽນແທນ </th> <th> ເບີໂທຕິດຕໍ່ </th> <th> ຜູ້ຜະລິດບັດ </th> <th> ແຂວງ </th> <th>ສາເຫດ </th> <th> Create User </th> <th> Create Time </th> </tr>'
-                let table = '<table>' + "<thead> " + th + "</thead> " + "<tbody>" + td + "</tbody>" + '</table>'
+                let table = "<table> <thead> " + th + "</thead> " + "<tbody>" + model + "</tbody> </table>";
                 // let headercount = '<div class="div-detail-model" style="display: flex; flex-direction : column;  align-items: start;"> <div class="div-count" >  <span> ລາຍງານຂໍ້ມູນຈຳນວນ: ' + modelcount + ' ລາຍການ' + ' </span> </div> <div class="div-count">  <span> ຂໍ້ມູນວັນທີ : ' + datetime + ' </span>  </div>  </div>' + " <br /> " + table;
 
                 const wins = window.open('', '');
 
-                wins.document.head.innerHTML = '<title> print </title>' + '<link rel="stylesheet" href="./app.css" media="print" />' + '  <link rel="stylesheet" href="./style/style-document.css" type="text/css" />' + '<link rel="stylesheet" href="./font/NotoSansLao-Regular.ttf" type="text/css" />';
-                wins.document.body.innerHTML = "<div class='div-header'>  <span> ລາຍງານ Block Card  </span> <div>" + "" + table + "" + " </div> </div>";
+                wins.document.head.innerHTML = '<title> print </title>' + '<link rel="stylesheet" href="./app.css" media="print" />' + '  <link rel="stylesheet" href="./style/style-document.css" type="text/css" />';
+                wins.document.body.innerHTML = "<div class='div-print' style='display: flex; flex-direction: column; align-items:center;'>  <span> ລາຍງານ Block Card  </span> <div>" + table + "</div> </div>" + "<style>  .div-print{width: 100%; display: flex; flex-direction: column ; align-items: center;}  table{ width : 100%; border-collapse : collapse; } table thead tr {border : 1px solid black;}  table thead tr th { font-size: 10px; text-align: center; border: 1px solid black; padding:2px ; } table tbody tr td{ font-size: 10px; border: 1px solid black; text-align: center; padding : 2px;}  </style>";
+                // wins.document.body.innerHTML =  table ;
                 // <style> .div - header { width: 100 %; text - align: center; } * { font- family : 'Noto Sans Lao'
                 // } table thead tr th{ font - size : 10px; } table tbody tr td{ font - size : 10px; } table{ width: 100 %; border - collapse: collapse; } table thead tr { border: 1px solid black; } table th, table td { border: 1px solid black; text - align: center; } table tr th { padding: 4px 0 } div - detail - model span{ font - size: 16px; } div - count{ display: flex; align - items: center; } div - count span{ fotn - size: 16px; } </style>
 
 
                 wins.focus();
                 wins.print();
-                wins.close();
+                // wins.close();
 
             } catch (error) {
                 console.log(error);

@@ -284,7 +284,7 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
             var td = "";
             DateTime datestart = Convert.ToDateTime(voucherreportrequest.datestart);
             DateTime dateend = Convert.ToDateTime(voucherreportrequest.dateend);
-     
+
             var date = datestart.ToString("dd/MM/yyyy") + " ຫາວັນທີ " + dateend.ToString("dd/MM/yyyy");
             if (blockcardmodel.Count > 0)
             {
@@ -307,7 +307,7 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
 
             }
 
-            await js.InvokeAsync<List<BlockCardReponse>>("printpdf",blockcardmodel , blockcardmodel.Count, date);
+            await js.InvokeAsync<List<BlockCardReponse>>("printpdf", td);
 
         }
 

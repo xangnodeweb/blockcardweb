@@ -9,13 +9,14 @@ using NPOI.HSSF.Record;
 using iTextSharp.text;
 using Microsoft.AspNetCore.Http.Headers;
 using NPOI.SS.UserModel;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BlockCardWeb.Components.Export
 {
     public class UserService
     {
         private readonly string url = "http://10.30.6.120:8081/srv_uvc.asmx";
-
+        public readonly string urlblockcard = "http://172.28.236.57:8080/services/UvcServices";
         public async Task<DefaultReponse<List<Supplier>>> getSupplier()
         {
             DefaultReponse<List<Supplier>> response = new DefaultReponse<List<Supplier>>();
@@ -248,24 +249,36 @@ namespace BlockCardWeb.Components.Export
             }
         }
 
-        public async Task<bool> ModifyVoucher()
+        public async Task<DefaultReponse<BlockCardStatusResponse>> ModifyVoucher(string serialNo)
         {
+            DefaultReponse<BlockCardStatusResponse> response = new DefaultReponse<BlockCardStatusResponse>();
+
             try
             {
                 XmlDocument docxml = new XmlDocument();
+                if (string.IsNullOrWhiteSpace(serialNo))
+                {
 
-              
+                    response.code = 1;
+                    response.message = "NOT_FOUND_SerialNo";
+                    response.result = null;
+                    return response;
+                }
+
+
                 var bodyxml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
-                    "  <soapenv:Envelope xmlns:soapenv = \"http://schemas.xmlsoap.org/soap/envelope/\" xmlns: uvc = \"http://www.huawei.com/bme/cbsinterface/uvcservices\" xmlns: uvc1 = \"http://www.huawei.com/bme/cbsinterface/uvcheader\" >" +
-                    "<soapenv:Header />    <soapenv:Body>" + " <uvc:ModifyVoucherLockRequestMsg><RequestHeader> <uvc1:Version> 1 </uvc1:Version>"  +
-                    "<uvc1:BusinessCode> 1 </ uvc1:BusinessCode>    <uvc1:MessageSeq> 4 </uvc1:MessageSeq><uvc1:OwnershipInfo> <uvc1:BEID> 101 </uvc1:BEID>  </uvc1:OwnershipInfo>" +
-                    "  <uvc1:AccessSecurity> <uvc1:LoginSystemCode> uvcadm </uvc1:LoginSystemCode><uvc1:Password>vSlCTDDJGRNTtwwx8hy1wQ==</uvc1:Password> </RequestHeader> " +
-                    " <ModifyVoucherLockRequest>   <uvc:SerialNoList> 220927000000087 </uvc:SerialNoList><uvc:OperationType> 4 </uvc:OperationType>  <uvc:OperationReason> sds </uvc:OperationReason> <uvc:CardBEID>?</uvc : CardBEID></ModifyVoucherLockRequest>" +
-                    "</uvc:ModifyVoucherLockRequestMsg> </soapenv:Body></soapenv:Envelope>";
+
+                    "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:uvc=\"http://www.huawei.com/bme/cbsinterface/uvcservices\" xmlns:uvc1=\"http://www.huawei.com/bme/cbsinterface/uvcheader\">" +
+                    "<soapenv:Header/>  <soapenv:Body><uvc:ModifyVoucherLockRequestMsg><RequestHeader> <uvc1:Version> 1 </uvc1:Version>   <uvc1:BusinessCode> CBS-test </uvc1:BusinessCode>" +
+                    "<uvc1:MessageSeq>${=(new java.text.SimpleDateFormat(\"yyyyMMddHHmmss\")).format(new Date())}${=(int)(Math.random() * 1000)}</uvc1:MessageSeq> <!--Optional:-->  <uvc1:AccessSecurity>  <uvc1:LoginSystemCode> APIGEEAPI </uvc1:LoginSystemCode>  <uvc1:Password> cdVOUWF+57KsMd57vH8D3H+ykq4CbeLtc8wCapSScPhjazQDDuTrFUP4sDBpyX+q</uvc1:Password>   <uvc1:RemoteIP>?</uvc1:RemoteIP></uvc1:AccessSecurity>   </RequestHeader>    <ModifyVoucherLockRequest> " +
+                    $"<uvc:SerialNoList> {serialNo}  </uvc:SerialNoList><uvc:OperationType>4</uvc:OperationType><!--Optional:-->  <uvc:OperationReason> sds </uvc:OperationReason>  </ModifyVoucherLockRequest> </uvc:ModifyVoucherLockRequestMsg>  </soapenv:Body></soapenv:Envelope>";
+                  
+                
+                
                 HttpClient httpclient = new HttpClient();
                 HttpContent content = new StringContent(bodyxml, Encoding.UTF8, "text/xml");
                 httpclient.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/soap+xml;charset=utf-8");
-                HttpResponseMessage responseclient = await httpclient.PostAsync(url, content);
+                HttpResponseMessage responseclient = await httpclient.PostAsync(urlblockcard, content);
                 var model = responseclient.Content.ReadAsStringAsync().Result;
 
                 docxml.LoadXml(model);
@@ -275,14 +288,17 @@ namespace BlockCardWeb.Components.Export
                 var dataresult = data != null ? data["qryVoucherResult"] : null;
                 QueryVoucherResponse queryvouchermodel = new QueryVoucherResponse();
 
-                return true;
+                response.success = true;
+
+
+                return response;
 
             }
             catch (Exception ex)
             {
 
                 Console.WriteLine(ex);
-                return false;
+                return response;
             }
         }
 
