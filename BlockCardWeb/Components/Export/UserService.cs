@@ -12,6 +12,7 @@ using NPOI.SS.UserModel;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using iTextSharp.text.pdf.qrcode;
 using static iTextSharp.text.pdf.PdfSigGenericPkcs;
+using System.Net.Http.Headers;
 
 namespace BlockCardWeb.Components.Export
 {
@@ -19,6 +20,7 @@ namespace BlockCardWeb.Components.Export
     {
         private readonly string url = "http://10.30.6.120:8081/srv_uvc.asmx";
         public readonly string urlblockcard = "http://172.28.236.57:8080/services/UvcServices";
+
 
         public async Task<DefaultReponse<List<Supplier>>> getSupplier()
         {
@@ -270,22 +272,40 @@ namespace BlockCardWeb.Components.Export
                     return response;
                 }
 
-            
-                
 
 
-               // var bodyxml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" + "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:uvc=\"http://www.huawei.com/bme/cbsinterface/uvcservices\" xmlns:uvc1=\"http://www.huawei.com/bme/cbsinterface/uvcheader\">" + "    <soapenv:Header/>  <soapenv:Body><uvc:ModifyVoucherLockRequestMsg><RequestHeader> <uvc1:Version> 1 </uvc1:Version>                        <uvc1:BusinessCode> CBS_test </uvc1:BusinessCode>" + "<uvc1:MessageSeq>${=(new java.text.SimpleDateFormat(\"yyyyMMddHHmmss\")).format(new Date())}${=(int)(Math.random() * 1000)}</uvc1:MessageSeq>                    <uvc1:AccessSecurity>  <uvc1:LoginSystemCode> APIGEEAPI </uvc1:LoginSystemCode>         <uvc1:Password> cdVOUWF+57KsMd57vH8D3H+ykq4CbeLtc8wCapSScPhjazQDDuTrFUP4sDBpyX+q</uvc1:Password>   <uvc1:RemoteIP>?</uvc1:RemoteIP></uvc1:AccessSecurity>  </RequestHeader>   <ModifyVoucherLockRequest> " + $"<uvc:SerialNoList>{serialNo}</uvc:SerialNoList>     <uvc:OperationType>4</uvc:OperationType>                 <uvc:OperationReason> sds </uvc:OperationReason>  </ModifyVoucherLockRequest> </uvc:ModifyVoucherLockRequestMsg>  </soapenv:Body></soapenv:Envelope>";
-              var bodyxml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>     <soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:uvc=\"http://www.huawei.com/bme/cbsinterface/uvcservices\" xmlns:uvc1=\"http://www.huawei.com/bme/cbsinterface/uvcheader\">\r\n" + "<soapenv:Header/>  <soapenv:Body><uvc:ModifyVoucherLockRequestMsg><RequestHeader> <uvc1:Version> 1 </uvc1:Version>" + " < !--Optional:--> <uvc1:BusinessCode> UVC_test </uvc1:BusinessCode>     <uvc1:MessageSeq>${=(new java.text.SimpleDateFormat(\"yyyyMMddHHmmss\")).format(new Date())}${=(int)(Math.random() * 1000)}</uvc1:MessageSeq>   < !--Optional:--><uvc1:AccessSecurity>  <uvc1:LoginSystemCode> APIGEEAPI </uvc1:LoginSystemCode>\r\n" + "<uvc1:Password> cdVOUWF+57KsMd57vH8D3H+ykq4CbeLtc8wCapSScPhjazQDDuTrFUP4sDBpyX+q</uvc1:Password>   <uvc1:RemoteIP>?</uvc1:RemoteIP></uvc1:AccessSecurity>  </RequestHeader>   <ModifyVoucherLockRequest>       <uvc:SerialNoList>220927000000087</uvc:SerialNoList><uvc:OperationType>1</uvc:OperationType>< !--Optional:--><uvc:OperationReason> sds </uvc:OperationReason>< !--Optional:--></ModifyVoucherLockRequest></uvc:ModifyVoucherLockRequestMsg></soapenv:Body></soapenv:Envelope>"; 
+                Random randoms = new Random();
+                var msgseq = $"{randoms.Next(0, 99999999)}" + $"{randoms.Next(0, 999999)}";
+                Console.WriteLine(msgseq);
+                //${=(new java.text.SimpleDateFormat(\"yyyyMMddHHmmss\")).format(new Date())}${=(int)(Math.random() * 1000)}
 
+                var bodyxml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" + "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:uvc=\"http://www.huawei.com/bme/cbsinterface/uvcservices\" xmlns:uvc1=\"http://www.huawei.com/bme/cbsinterface/uvcheader\"> <soapenv:Header/><soapenv:Body><uvc:ModifyVoucherLockRequestMsg><RequestHeader><uvc1:Version>1</uvc1:Version><uvc1:BusinessCode>UVC_test</uvc1:BusinessCode>" + $"<uvc1:MessageSeq> {msgseq} </uvc1:MessageSeq><uvc1:AccessSecurity><uvc1:LoginSystemCode>APIGEEAPI</uvc1:LoginSystemCode><uvc1:Password>cdVOUWF+57KsMd57vH8D3H+ykq4CbeLtc8wCapSScPhjazQDDuTrFUP4sDBpyX+q</uvc1:Password><uvc1:RemoteIP>?</uvc1:RemoteIP></uvc1:AccessSecurity></RequestHeader><ModifyVoucherLockRequest> " + $"<uvc:SerialNoList>{serialNo}</uvc:SerialNoList>     <uvc:OperationType>4</uvc:OperationType>                <uvc:OperationReason>sds</uvc:OperationReason></ModifyVoucherLockRequest></uvc:ModifyVoucherLockRequestMsg></soapenv:Body></soapenv:Envelope>";
 
                 HttpClient httpclient = new HttpClient();
                 HttpContent content = new StringContent(bodyxml, Encoding.UTF8, "text/xml");
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, urlblockcard);
 
+                request.Content = new StringContent(bodyxml, Encoding.UTF8, "text/xml");
+                request.Content.Headers.Clear();
+                request.Content.Headers.ContentType = new MediaTypeHeaderValue("text/xml");
+                request.Headers.Clear();
+
+                var requestbody = new HttpRequestMessage()
+                {
+                    Method = HttpMethod.Post,
+                    RequestUri = new Uri(urlblockcard),
+                    Content = content
+                };
                 httpclient.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "text/xml;charset=utf-8");
-                HttpResponseMessage responseclient = await httpclient.PostAsync(urlblockcard, content);
-                var model = responseclient.Content.ReadAsStringAsync().Result;
 
-                docxml.LoadXml(model);
+                var resultresponse = await httpclient.SendAsync(requestbody);
+
+                var resultread = await resultresponse.Content.ReadAsStringAsync() ;
+
+
+
+
+                docxml.LoadXml(resultread);
                 var jsontext = JsonConvert.SerializeXmlNode(docxml);
                 var datajson = JObject.Parse(jsontext);
                 var data = datajson["soap:Envelope"]["soap:Body"]["qryVoucherResponse"];

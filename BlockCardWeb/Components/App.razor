@@ -111,9 +111,8 @@
                 console.log(error);
 
             }
-
-
         }
+
         async function sleeps() {
             try {
                 console.log("delay ")
@@ -123,8 +122,33 @@
             }
         }
 
-
     </script>
+
+    <script>
+
+      async   function sendblock(){
+
+             try {
+                const bodys = "<?xml version=\"1.0\" encoding=\"utf-8\"?> <soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:uvc=\"http://www.huawei.com/bme/cbsinterface/uvcservices\" xmlns:uvc1=\"http://www.huawei.com/bme/cbsinterface/uvcheader\">\r\n" + "<soapenv:Header/>  <soapenv:Body><uvc:ModifyVoucherLockRequestMsg><RequestHeader> <uvc1:Version> 1 </uvc1:Version>" + " < !--Optional:--> <uvc1:BusinessCode> UVC_test </uvc1:BusinessCode>     <uvc1:MessageSeq>${=(new java.text.SimpleDateFormat(\"yyyyMMddHHmmss\")).format(new Date())}${=(int)(Math.random() * 1000)}</uvc1:MessageSeq>   < !--Optional:--><uvc1:AccessSecurity>  <uvc1:LoginSystemCode> APIGEEAPI </uvc1:LoginSystemCode>\r\n" + "<uvc1:Password> cdVOUWF+57KsMd57vH8D3H+ykq4CbeLtc8wCapSScPhjazQDDuTrFUP4sDBpyX+q</uvc1:Password>   <uvc1:RemoteIP>?</uvc1:RemoteIP></uvc1:AccessSecurity>  </RequestHeader>   <ModifyVoucherLockRequest>       <uvc:SerialNoList>220927000000087</uvc:SerialNoList><uvc:OperationType>1</uvc:OperationType>< !--Optional:--><uvc:OperationReason> sds </uvc:OperationReason>< !--Optional:--></ModifyVoucherLockRequest></uvc:ModifyVoucherLockRequestMsg></soapenv:Body></soapenv:Envelope>";
+                 console.log(bodys);
+                 var path = 'http://127.0.0.1:3001/blockcardmodify';
+                 const response = await fetch(path, {
+                     method: 'POST',
+                     body: bodys
+                 }).then();
+                 const data = await response.json();
+                 console.log(data);
+
+
+             } catch (error) {
+                 console.log(error);
+             }
+
+         }
+
+
+        </script>
+
 
     <script>
 

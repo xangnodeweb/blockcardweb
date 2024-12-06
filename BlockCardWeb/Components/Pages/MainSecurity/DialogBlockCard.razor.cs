@@ -4,6 +4,7 @@ using BlockCardWeb.Components.Export;
 using LibraryServices;
 using LibraryServices.Model;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using MudBlazor;
 using Npgsql;
 using System.IdentityModel.Tokens.Jwt;
@@ -15,6 +16,7 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
     {
         [Inject] public ILocalStorageService LocalStorage { get; set; }
         [Inject] public IDialogService DialogShow { get; set; }
+        [Inject] public IJSRuntime js { get; set; }
         [CascadingParameter] public MudDialogInstance Dialog { get; set; }
         [Inject] public NavigationManager nav { get; set; }
         [Parameter] public string messagecontent { get; set; }
@@ -200,6 +202,8 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
                 }
             
                 var serialNo = "";
+                //await js.InvokeAsync<string>("sendblock");
+
                 var resultblockcardlock = await userService.ModifyVoucher(blockcardrequest.bs_new);
 
 
