@@ -64,7 +64,9 @@
 .h-46-px {
     height: 46px;
 }
-
+.h-150{
+    height : 150%;
+}
 .h-0 {
     height: 0;
 }
@@ -181,6 +183,10 @@
 .f-32-px {
     font-size: 32px;
 }
+.f-36-px{
+    font-size: 36px;
+}
+
 
 .f-55-px {
     font-size: 55px;
@@ -277,6 +283,12 @@
 .pt-40-px {
     padding-top: 40px;
 }
+.pt-28{
+    padding-top : 28%;
+}
+.pt-45{
+    padding-top: 45%;
+}
 
 .pt-10 {
     padding-top: 40px;
@@ -340,7 +352,10 @@
     padding-top: 20px;
     padding-bottom: 20px;
 }
-
+.py-7{
+    padding-top : 28px;
+    padding-bottom: 28px;
+}
 .py-8 {
     /*padding-top : 32px;*/
     padding: 32px 0;
@@ -499,6 +514,9 @@
 .max-w-600-px {
     max-width: 600px;
 }
+.max-w-700-px{
+    max-width : 700px;
+}
 
 .max-width-none {
     max-width: none;
@@ -512,14 +530,25 @@
 .top-0 {
     top: 0;
 }
-
+.top-28{
+    top : 28%;
+}
+.top-30{
+    top: 30%;
+}
 .left-0{
     left : 0;
 }
 .right-0{
     right : 0;
 }
+.z-index-5{
+    z-index : 5;
+}
 
+.display-none{
+    display: none;
+}
 .bg-default {
     background-color: #01c0c8;
 }
@@ -567,6 +596,19 @@
 .bg-blockcard-clear {
     background-color: #FEC107;
 }
+.bg-success{
+    background-color: #00c292 !important;
+}
+.bg-danger {
+    background-color: #e46a76;
+}
+.bg-warning{
+    background-color : #fec107;
+}
+
+.bg-backdrop{
+    background-color : rgba(33,33,33, 0.4980392156862745)
+}
 
 .text-white {
     color: #FFF;
@@ -598,6 +640,9 @@
 
 .color-text-dialog {
     color: #4F5467;
+}
+.color-success{
+    color : #00E676;
 }
 
 .fill-white {

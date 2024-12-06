@@ -11,6 +11,7 @@ using MudBlazor;
 using System.Diagnostics;
 using Castle.Facilities.TypedFactory.Internal;
 using LibraryServices;
+using BlockCardWeb.Components.Export;
 
 namespace BlockCardWeb.Components.Pages.MainSecurity
 {
@@ -25,11 +26,12 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
         public bool? loading { get; set; } = false;
 
         public UserSqlService userSqlService = new UserSqlService();
+        public UserService userService = new UserService();
         public List<Supplier> suppliermodel = new List<Supplier>();
         public List<Province> provincemodel = new List<Province>();
         protected override async Task OnInitializedAsync()
         {
-       
+
 
         }
 
@@ -37,7 +39,7 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
         {
             try
             {
-          
+
                 loading = true;
                 StateHasChanged();
                 if (string.IsNullOrWhiteSpace(bs))
@@ -57,7 +59,7 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
                 //var res = srvu.Query_BS(bs);
                 XmlDocument docxml = new XmlDocument();
                 var bodyxml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" + "<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">" + " <soap12:Body>\r\n    <qryVoucher xmlns=\"http://tempuri.org/\">" + $"<BS>{bs}</BS>" + "  </qryVoucher>  </soap12:Body></soap12:Envelope>";
-             
+
 
                 HttpClient httpclient = new HttpClient();
                 HttpContent content = new StringContent(bodyxml, Encoding.UTF8, "text/xml");
@@ -75,8 +77,8 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
                 {
                     if (dataresult["ResultCode"].ToString() == "0")
                     {
-           
-                  
+
+
                         if (dataresult["ResultCode"] != null)
                         {
                             queryvoucher.ResultCode = dataresult["ResultCode"].ToString();
@@ -85,7 +87,7 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
                         {
                             queryvoucher.ResultCode = "";
                         }
-                       
+
                         if (dataresult["ResultDesc"] != null)
                         {
                             queryvoucher.ResultDesc = dataresult["ResultDesc"].ToString();
@@ -94,7 +96,7 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
                         {
                             queryvoucher.ResultDesc = "";
                         }
-           
+
 
 
 
@@ -115,7 +117,7 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
                         {
                             queryvoucher.FaceValue = "";
                         }
-                    
+
                         if (dataresult["HotCardFlag"] != null)
                         {
                             queryvoucher.HotCardFlag = dataresult["HotCardFlag"].ToString();
@@ -125,7 +127,7 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
                             queryvoucher.HotCardFlag = "";
                         }
 
-               
+
 
                         if (dataresult["RechargeNumber"] != null)
                         {
@@ -155,8 +157,8 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
                         {
                             queryvoucher.CardStopDate = "";
                         }
-                     
-             
+
+
 
                         if (dataresult["HotCardFlagDesc"] != null)
                         {
@@ -166,7 +168,7 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
                         {
                             queryvoucher.HotCardFlagDesc = "";
                         }
-                    
+
                         if (dataresult["TradeTime"] != null)
                         {
                             queryvoucher.TradeTime = dataresult["TradeTime"].ToString();
@@ -177,7 +179,8 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
                         }
 
                         btnstatus = true;
-                    }else if (dataresult["ResultCode"].ToString() == "107010623")
+                    }
+                    else if (dataresult["ResultCode"].ToString() == "107010623")
                     {
                         btnstatus = false;
                         DialogParameters dialog = new DialogParameters() { ["contentstring"] = $"ບັດບໍ່ມີໃນລະບົບ" };
@@ -237,12 +240,32 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
             }
 
 
-            DialogParameters dialogparameter = new DialogParameters() { ["messagecontent"] = "" , ["queryvouchermodel"] = queryvoucher };
-            Dialog.Show<DialogBlockCard>("custom option dialog", dialogparameter, new DialogOptions (){ NoHeader = true });
+            DialogParameters dialogparameter = new DialogParameters() { ["messagecontent"] = "", ["queryvouchermodel"] = queryvoucher };
+            DialogResult result = await Dialog.Show<DialogBlockCard>("custom option dialog", dialogparameter, new DialogOptions() { NoHeader = true }).Result;
+            if (result.Data != null)
+            {
+                if (result.Data == "1")
+                {
+                    var resultmodel = await userService.Queryvoucher(queryvoucher.SerialNo);
+                    if (resultmodel.success == true)
+                    {
+                        queryvoucher = resultmodel.result;
+                    }
+                    DialogParameters dialog = new DialogParameters() { ["contentstring"] = "Block Card ສຳເລັດ", ["optionicon"] = 1 };
+                    Dialog.Show<DialogVoucher>("custom dialog", dialog, new MudBlazor.DialogOptions { NoHeader = true });
+
+                }
+                else
+                {
+                    DialogParameters dialog = new DialogParameters() { ["contentstring"] = "Block Card ສຳເລັດບໍ່ສຳເລັດ" };
+                    Dialog.Show<DialogVoucher>("custom dialog", dialog, new MudBlazor.DialogOptions { NoHeader = true });
+                }
 
 
+            }
+            StateHasChanged();
         }
-      
+
         public async Task<string> checkflied(JToken value)
         {
             try
@@ -254,7 +277,7 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
                 else
                 {
 
-                }  
+                }
                 return "";
             }
             catch (Exception ex)

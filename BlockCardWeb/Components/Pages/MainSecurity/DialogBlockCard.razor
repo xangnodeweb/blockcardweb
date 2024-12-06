@@ -1,15 +1,15 @@
 ﻿@rendermode InteractiveServer
 <MudDialog>
     <DialogContent>
-        <MudPaper Class="w-100 bg-none d-flex flex-column" Elevation="0">
+        <MudPaper Class="w-100 bg-none d-flex flex-column position-relative div-container" Elevation="0">
 
-            <MudText Class="f-20-px font-w-bold"> Block Card Infomation </MudText>
-            <MudText Class="f-18-px mt-5 lb-text"> ເລກທີ B/S ລູກຄ້າ  </MudText>
+            <MudText Class="f-36-px font-w-bold"> Block Card Infomation </MudText>
+            <MudText Class="f-16-px mt-5 lb-text"> ເລກທີ B/S ລູກຄ້າ  </MudText>
             @if (queryvouchermodel != null)
             {
                 if (!string.IsNullOrWhiteSpace(queryvouchermodel.SerialNo))
                 {
-                    <MudTextField T="string" Variant="Variant.Text" ReadOnly="true" @bind-Value="@blockcardrequest.SerialNo"  Class="w-100 f-21-px color-text-dialog text-dialog" />
+                    <MudTextField T="string" Variant="Variant.Text" ReadOnly="true" @bind-Value="@blockcardrequest.SerialNo" Class="w-100 f-21-px color-text-dialog text-dialog" />
                 }
                 else
                 {
@@ -18,7 +18,7 @@
             }
 
 
-            <MudText Class="f-18-px mt-5 lb-text">  ຍອດເງິນໜ້າບັດ  </MudText>
+            <MudText Class="f-16-px mt-5 lb-text">  ຍອດເງິນໜ້າບັດ  </MudText>
             @if (queryvouchermodel != null)
             {
                 if (!string.IsNullOrWhiteSpace(queryvouchermodel.FaceValue))
@@ -30,7 +30,7 @@
                     <MudTextField T="string" Variant="Variant.Text" ReadOnly="true" Class="w-100 f-21-px color-text-dialog text-dialog" />
                 }
             }
-            <MudText Class="f-18-px mt-5  lb-text">  ວັນໝົດອາຍຸ </MudText>
+            <MudText Class="f-16-px mt-5  lb-text">  ວັນໝົດອາຍຸ </MudText>
 
             @if (queryvouchermodel != null)
             {
@@ -44,24 +44,24 @@
                 }
             }
 
-            <MudText Class="f-18-px mt-5 lb-text">  ເລກທີ B/S ປ່ຽນແທນ </MudText>
-            <MudNumericField T="string" Variant="Variant.Text" HideSpinButtons="true" Pattern=@("[0-9]") @bind-Value="@blockcardrequest.bs_new" Class="w-100 color-text-dialog text-dialog " />
-            <MudText Class="f-18-px mt-5 lb-text">  ໝາຍເລກຕິດຕໍ່ລູກຄ້າ </MudText>
-            <MudNumericField  T="string" HideSpinButtons="true" Variant="Variant.Text" Pattern=@("[0-9]") @bind-Value="@blockcardrequest.msisdn" Class="w-100 color-text-dialog text-dialog" />
-            <MudText Class="f-18-px mt-5 lb-text">  ຜູ້ຜະລິດບັດ </MudText>
-            <MudSelect T="string" AnchorOrigin="Origin.BottomCenter" ValueChanged="ValueSupplier" Value="@blockcardrequest.suppliername">
+            <MudText Class="f-16-px mt-5 lb-text">  ເລກທີ B/S ປ່ຽນແທນ </MudText>
+            <MudNumericField T="string" Variant="Variant.Text" HideSpinButtons="true" Pattern=@("[0-9]") @bind-Value="@blockcardrequest.bs_new" @ref="@refbs_new" Class="w-100 color-text-dialog text-dialog " />
+            <MudText Class="f-16-px mt-5 lb-text">  ໝາຍເລກຕິດຕໍ່ລູກຄ້າ </MudText>
+            <MudNumericField T="string" HideSpinButtons="true" Variant="Variant.Text" Pattern=@("[0-9]") @bind-Value="@blockcardrequest.msisdn" @ref="@refphone" Class="w-100 color-text-dialog text-dialog" />
+            <MudText Class="f-16-px mt-5 lb-text">  ຜູ້ຜະລິດບັດ </MudText>
+            <MudSelect T="string" AnchorOrigin="Origin.BottomCenter" ValueChanged="ValueSupplier" @ref="@refsupplier" Value="@blockcardrequest.suppliername">
 
                 <MudSelectItem Value=@("0") Class="text-stds"> ເລືອກຜູ້ຜະລິດ  </MudSelectItem>
                 @if (suppliermodel.Count > 0)
                 {
-                    foreach(var item in suppliermodel)
+                    foreach (var item in suppliermodel)
                     {
                         <MudSelectItem Value=@($"{item.supplier_name}")> @item.supplier_name </MudSelectItem>
                     }
                 }
             </MudSelect>
-            <MudText Class="f-18-px mt-5 lb-text">  ແຂວງ </MudText>
-            <MudSelect T="string" AnchorOrigin="Origin.BottomCenter" ValueChanged="ValueProvince" Value="@blockcardrequest.provincename">
+            <MudText Class="f-16-px mt-5 lb-text">  ແຂວງ </MudText>
+            <MudSelect T="string" AnchorOrigin="Origin.BottomCenter" ValueChanged="ValueProvince" @ref="@refProvince" Value="@blockcardrequest.provincename">
 
                 <MudSelectItem Value=@("0")> ເລືອກແຂວງ  </MudSelectItem>
                 @if (provincemodel.Count > 0)
@@ -72,46 +72,63 @@
                     }
                 }
             </MudSelect>
-            <MudText Class="f-18-px mt-5 lb-text">  ເຫດຜົນຂອງການປ່ຽນ </MudText>
-            <MudSelect T="string" AnchorOrigin="Origin.BottomCenter" ValueChanged="ValueRemark" Value="@blockcardrequest.remark" >
+            <MudText Class="f-16-px mt-5 lb-text">  ເຫດຜົນຂອງການປ່ຽນ </MudText>
+            <MudSelect T="string" AnchorOrigin="Origin.BottomCenter" ValueChanged="ValueRemark" Value="@blockcardrequest.remark">
                 <MudSelectItem Value=@("0")> ເລືອກເຫດຜົນ  </MudSelectItem>
                 <MudSelectItem Value=@("Pin Lost")> Pin Lost  </MudSelectItem>
             </MudSelect>
-            <MudCard Class="bg-none w-100 d-flex flex-row justify-content-between pt-5" Elevation="0">
+            <MudCard Class="bg-none w-100 d-flex flex-row justify-content-between py-7" Elevation="0">
                 <MudButton OnClick="onsaveBlockcard" Class="bg-save h-50-px color-white f-20-px w-40 border-radius-25-px">  <MudIcon Icon="@Icons.Material.Outlined.Save" /> ບັນທຶກ </MudButton>
-                <MudButton  OnClick="Close" Class="bg-blockcard-clear  h-50-px  color-white f-20-px w-40 border-radius-25-px"> <MudIcon Icon="@Icons.Material.Outlined.RestartAlt" @onclick="() => Close()" />  ຍົກເລີກ </MudButton>
+                <MudButton OnClick="Close" Class="bg-blockcard-clear  h-50-px  color-white f-20-px w-40 border-radius-25-px "> <MudIcon Icon="@Icons.Material.Outlined.RestartAlt" @onclick="() => Close()" />  ຍົກເລີກ </MudButton>
 
 
             </MudCard>
+
         </MudPaper>
-
+        <MudCard Class=@($"w-100 h-150 position-absolute top-0 left-0 z-index-5 border-radius-0 align-items-center { (blockcardload == true ? "d-flex bg-backdrop" : "d-none")}") Elevation="0">
+            <MudCard Elevation="0" Class="d-flex  h-100 w-100 pt-45 align-items-center ">
+                <MudProgressCircular Indeterminate="true" Size="Size.Large" Color="Color.Primary" Class="" />
+                <MudText Class="f-20-px">  ກຳລັງໂຫຼດ  </MudText>
+            </MudCard>
+        </MudCard>
     </DialogContent>
-
 
 </MudDialog>
 
 <style>
 
     .mud-dialog-width-sm {
-        width: 515px;
+        width: 600px;
         min-width: 450px;
-        max-width: 600px;
+        max-width: 700px;
+    }
+
+    div.div-container {
+        padding: 20px 52px;
     }
 
     .text-dialog .mud-input > input.mud-input-root, div.mud-input-slot.mud-input-root {
-        font-size: 21px;
-        padding : 15px 7px 8px 7px;
-        color : #4f5467;
+        font-size: 16px;
+        padding: 15px 7px 8px 7px;
+        color: #4f5467;
     }
-    .lb-text{
+
+    .lb-text {
         color: #212529;
     }
 
-    .mud-select .mud-select-input .mud-input-slot{
-        font-family : 'Noto Sans Lao';
-        font-size : 18px;
+    .mud-select .mud-select-input .mud-input-slot {
+        font-family: 'Noto Sans Lao';
+        font-size: 17px;
     }
 
+    .mud-dialog .mud-dialog-content {
+        margin: 0;
+    }
+
+    .mud-input.mud-input-underline:before {
+        border-bottom: 1px solid #e9ecef;
+    }
 </style>
 
 @code {

@@ -27,11 +27,20 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
         public List<Supplier> suppliermodel = new List<Supplier>();
         public List<Province> provincemodel = new List<Province>();
         public BlockCardVoucherrequest blockcardrequest = new BlockCardVoucherrequest();
+
+        public MudNumericField<string> refbs_new = new MudNumericField<string>();
+        public MudNumericField<string> refphone = new MudNumericField<string>();
+        public MudSelect<string> refsupplier = new MudSelect<string>();
+        public MudSelect<string> refProvince = new MudSelect<string>();
+
         public string? token { get; set; } = "";
+        public bool? blockcardload { get; set; } = false;
+
         protected override async Task OnAfterRenderAsync(bool firstload)
         {
             if (firstload)
             {
+                isload(true);
                 await Task.WhenAll(getSupplier(), getProvince(), geToken());
 
                 if (queryvouchermodel != null)
@@ -42,6 +51,7 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
                         blockcardrequest.SerialNo = queryvouchermodel.SerialNo;
                         blockcardrequest.FaceValue = queryvouchermodel.FaceValue;
                         blockcardrequest.CardStopDate = queryvouchermodel.CardStopDate;
+                        blockcardrequest.remark = "Pin Lost";
                         if (suppliermodel.Count > 0)
                         {
 
@@ -49,6 +59,7 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
                     }
                 }
             }
+            blockcardload = false;
             await InvokeAsync(StateHasChanged);
 
         }
@@ -135,59 +146,83 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
 
         public async Task onsaveBlockcard()
         {
+            isload(true);
 
             if (blockcardrequest == null)
             {
+                isload(false);
                 return;
             }
             blockcardrequest.createtime = $"{DateTime.Now.ToString("yyyy-MM-dd")}";
             if (string.IsNullOrWhiteSpace(blockcardrequest.SerialNo))
             {
+                isload(false);
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(blockcardrequest.FaceValue))
             {
+                isload(false);
                 return;
             }
             if (string.IsNullOrWhiteSpace(blockcardrequest.CardStopDate))
             {
+                isload(false);
                 return;
             }
-            if (string.IsNullOrWhiteSpace(blockcardrequest.msisdn))
+            if (string.IsNullOrWhiteSpace(blockcardrequest.bs_new))
             {
+                isload(false);
+                refbs_new.Error = true;
+                refbs_new.ErrorText = "ກະລຸນາປ້ອນເລກທີ B/S ປ່ຽນແທນ";
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(blockcardrequest.bs_new))
+            if (string.IsNullOrWhiteSpace(blockcardrequest.msisdn))
             {
+                isload(false);
+                refphone.Error = true;
+                refphone.ErrorText = "ກະລຸນາປ້ອນໝາຍເລກຕິດຕໍ່ລູກຄ້າ";
                 return;
             }
+
+
 
             if (string.IsNullOrWhiteSpace(blockcardrequest.createtime))
             {
+                isload(false);
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(blockcardrequest.createuser))
             {
+                isload(false);
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(blockcardrequest.suppliername))
+            if (blockcardrequest.suppliername == "0")
             {
+                isload(false);
+                refsupplier.Error = true;
+                refsupplier.ErrorText = "ກະລຸນາເລືອກຜູ້ຜະລິດບັດ";
+
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(blockcardrequest.provincename))
+            if (blockcardrequest.provincename == "0")
             {
+                isload(false);
+                refProvince.Error = true;
+                refProvince.ErrorText = "ກະລຸນາປ້ອນແຂວງ";
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(blockcardrequest.remark))
-            {
-                return;
-            }
+            //if (string.IsNullOrWhiteSpace(blockcardrequest.remark))
+            //{
+
+
+            //}     
+            blockcardrequest.remark = "Pin Lost";
             var query_bs_new = await userService.Queryvoucher(blockcardrequest.bs_new); // query new_bs HotCardFlag == 0 Operaion Success && HotcardFlagDesc == Activated  
 
             // query
@@ -196,22 +231,30 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
                 if (query_bs_new.result.HotCardFlag != "0")
                 {
                     Dialog.Close();
-                    DialogParameters dialogparameter = new DialogParameters() { ["contentstring"] = "" };
+                    var statuscard = await checkstatuscard(query_bs_new.result);
+                    DialogParameters dialogparameter = new DialogParameters() { ["contentstring"] = statuscard };
                     DialogShow.Show<DialogVoucher>("custom option dialog", dialogparameter, new DialogOptions() { NoHeader = true });
                     return;
                 }
-            
+
                 var serialNo = "";
                 //await js.InvokeAsync<string>("sendblock");
 
                 var resultblockcardlock = await userService.ModifyVoucher(blockcardrequest.bs_new);
-
+                if (resultblockcardlock.success == true)
+                {
+                    Dialog.Close("1"); // Close == 1 dialog block success
+                }
+                else
+                {
+                    Dialog.Close("0"); // Close == 0 dialog blockcard failed
+                }
 
                 //var resultblockcard = await userService.SaveBlockCardVoucher(blockcardrequest);
 
             }
-
-
+            isload(false);
+            StateHasChanged();
         }
         public async Task ValueSupplier(string value)
         {
@@ -265,7 +308,34 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
             {
                 Console.WriteLine(ex);
             }
+        }
+        public async Task<string> checkstatuscard(QueryVoucherResponse request)
+        {
+            var status = "";
+            if (request.HotCardFlag == "4")
+            {
+                status = "ບັດນີ້ບໍ່ສາມາດນຳໃຊ້ໄດ້ ເນື່ອງຈາກມີການ BLOCK";
+            }
+            else if (request.HotCardFlag == "1")
+            {
+                status = "ບັດນີ້ຖືກນຳໃຊ້ແລ້ວ";
+            }
+            else if (request.HotCardFlag == "7")
+            {
+                status = "ບັດນີ້ໝົດອາຍຸການນຳໃຊ້";
+            }
+            else if (request.HotCardFlag == "5")
+            {
+                status = "ບັດນີ້ຍັງບໍ່ທັນ Active ໃນລະບົບ UVC";
+            }
 
+
+            return status;
+        }
+        public async Task isload(bool status)
+        {
+            blockcardload = status;
+            await InvokeAsync(StateHasChanged);
         }
         public async Task Close()
         {

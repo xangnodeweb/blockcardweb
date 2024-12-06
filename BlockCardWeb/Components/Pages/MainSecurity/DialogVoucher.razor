@@ -1,11 +1,19 @@
 ﻿
 <MudDialog>
-<DialogContent>
-    <MudPaper Class="d-flex flex-column align-items-center justify-content-between  pt-8" Elevation="0">
-        <MudGrid Class="ma-0 w-100">
-            <MudItem xs="12" Class="pa-0 text-center">
-                    <MudIcon Icon="@Icons.Material.Outlined.Cancel" Class="f-100-px m-auto color-red" />
-            </MudItem>
+    <DialogContent>
+        <MudPaper Class="d-flex flex-column align-items-center justify-content-between  pt-8" Elevation="0">
+            <MudGrid Class="ma-0 w-100">
+                <MudItem xs="12" Class="pa-0 text-center">
+                    @if (optionicon == 1)
+                    {
+                        <MudIcon Icon="@Icons.Material.Outlined.CheckCircle" Class="f-100-px m-auto color-succes" />
+                    }
+                    else
+                    {
+                        <MudIcon Icon="@Icons.Material.Outlined.Cancel" Class="f-100-px m-auto color-red" />
+                    }
+
+                </MudItem>
                 <MudItem xs="12" Class="px-0 pb-0 pt-2">
                     <MudText Class="f-25-px text-center"> @((MarkupString)contentstring) </MudText>
                 </MudItem>
@@ -13,19 +21,22 @@
                     <MudButton Class="bg-primary-btn w-100-px h-50-px color-white" @onclick="cancle"> OK </MudButton>
 
                 </MudItem>
-        </MudGrid>
+            </MudGrid>
 
-     
-    </MudPaper>
-</DialogContent>
+
+        </MudPaper>
+    </DialogContent>
 </MudDialog>
 
 <style>
 
-    svg.mud-icon-root.mud-svg-icon{
-        fill : #F44336;
+    svg.mud-icon-root.mud-svg-icon {
+        fill: #F44336;
     }
 
+        svg.mud-icon-root.mud-svg-icon color-succes {
+        fill: #00E676;
+    }
 </style>
 
 @code {

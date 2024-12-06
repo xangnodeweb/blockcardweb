@@ -7,6 +7,7 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
     {
         [CascadingParameter] public MudDialogInstance muddialog { get; set; }
         [Parameter] public string? contentstring { get;set; }
+        [Parameter] public int? optionicon { get; set; }    
 
         public void cancle() => muddialog.Close();
 

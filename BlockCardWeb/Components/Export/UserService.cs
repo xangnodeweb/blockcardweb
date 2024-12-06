@@ -259,7 +259,7 @@ namespace BlockCardWeb.Components.Export
         public async Task<DefaultReponse<BlockCardStatusResponse>> ModifyVoucher(string serialNo)
         {
             DefaultReponse<BlockCardStatusResponse> response = new DefaultReponse<BlockCardStatusResponse>();
-
+            BlockCardStatusResponse blockcardresponse = new BlockCardStatusResponse();
             try
             {
                 XmlDocument docxml = new XmlDocument();
@@ -299,28 +299,43 @@ namespace BlockCardWeb.Components.Export
                 httpclient.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "text/xml;charset=utf-8");
 
                 var resultresponse = await httpclient.SendAsync(requestbody);
-
-                var resultread = await resultresponse.Content.ReadAsStringAsync() ;
-
-
-
+                //var status =  resultresponse.EnsureSuccessStatusCode;
+                if (!resultresponse.IsSuccessStatusCode)
+                {
+                    response.code = 1;
+                    response.message = "BLOCKCARD_FAILED";
+                    response.result = null;
+                    return response;
+                }
+                var resultread = await resultresponse.Content.ReadAsStringAsync();
 
                 docxml.LoadXml(resultread);
                 var jsontext = JsonConvert.SerializeXmlNode(docxml);
                 var datajson = JObject.Parse(jsontext);
-                var data = datajson["soap:Envelope"]["soap:Body"]["qryVoucherResponse"];
-                var dataresult = data != null ? data["qryVoucherResult"] : null;
-                QueryVoucherResponse queryvouchermodel = new QueryVoucherResponse();
-
-                response.success = true;
 
 
+                var data = datajson["soapenv:Envelope"]["soapenv:Body"]["uvc:ModifyVoucherLockResultMsg"];
+                var dataresult = data != null ? data["ResultHeader"] : null;
+
+                if (dataresult != null)
+                {
+                    blockcardresponse.Version = dataresult["uvc1:Version"].ToString();
+                    blockcardresponse.ResultCode = dataresult["uvc1:ResultCode"].ToString();
+                    blockcardresponse.ResultDesc = dataresult["uvc1:ResultDesc"].ToString();
+                }
+                if (blockcardresponse != null)
+                {
+                    response.result = blockcardresponse;
+                    response.success = true;
+                    return response;
+                }
+                response.message = "CANNOT_BLOCKCARD_FAILED";
                 return response;
 
             }
             catch (Exception ex)
             {
-
+                response.message = "CANNOT_BLOCKCARD_FAILED";
                 Console.WriteLine(ex);
                 return response;
             }

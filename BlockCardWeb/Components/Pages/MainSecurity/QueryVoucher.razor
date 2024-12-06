@@ -17,7 +17,7 @@
                     <MudNumericField T="string" Variant="Variant.Outlined" HideSpinButtons="true" @ref="@refbs" Pattern=@("[0-9]") @bind-Value="@bs" Placeholder="ໝາຍເລກ B/S" Class="input-search" />
 
                 </MudCard>
-                <MudCard Elevation="0" Class=" d-flex flex-row align-items-center">
+                <MudCard Elevation="0" Class=" d-flex flex-row align-items-center h-55-px">
                     <MudButton StartIcon="@Icons.Material.Filled.Search" @onclick="QueryVoucherBs" Class="bg-primary-btn color-white ml-4 fill-white w-110-px f-16-px w-130-px h-50-px border-radius-25-px"> ຄົ້ນຫາຂໍ້ມູນ </MudButton>
                     <MudButton StartIcon="@Icons.Material.Filled.Refresh" @onclick="cleardata" Class="bg-clear-btn color-white ml-3 fill-white w-110-px  f-16-px w-120-px h-50-px border-radius-25-px"> ຍົກເລີກ </MudButton>
 
@@ -75,16 +75,16 @@
 
                     }
                     <MudText Class="mt-4">  ສະຖານະຂອງບັດ </MudText>
-                    @if (!string.IsNullOrWhiteSpace(queryvoucher.FaceValue))
+                    @if (!string.IsNullOrWhiteSpace(queryvoucher.HotCardFlag))
                     {
                         if (queryvoucher.HotCardFlag == "0")
                         {
-                            <MudTextField ReadOnly="true" T="string" Value=@("ບັດນີ້ສາມາດນຳໃຊ້ໄດ້") Variant="Variant.Outlined" Class="bg-yellow-clear" />
+                            <MudTextField ReadOnly="true" T="string" Value=@("ບັດນີ້ສາມາດນຳໃຊ້ໄດ້") Variant="Variant.Outlined" Class="bg-success" />
 
                         }
                         else if (queryvoucher.HotCardFlag == "4")
                         {
-                            <MudTextField ReadOnly="true" T="string" Value=@("ບັດນີ້ບໍ່ສາມາດນຳໃຊ້ໄດ້ ເນື່ອງຈາກມີການ BLOCK") Variant="Variant.Outlined" Class="bg-yellow-clear" />
+                            <MudTextField ReadOnly="true" T="string" Value=@("ບັດນີ້ບໍ່ສາມາດນຳໃຊ້ໄດ້ ເນື່ອງຈາກມີການ BLOCK") Variant="Variant.Outlined" Class="bg-block" />
 
                         }
                         else if (queryvoucher.HotCardFlag == "1")
@@ -110,9 +110,8 @@
 
                     }
                 </MudCard>
-                @if (queryvoucher.HotCardFlag != "0")
+                @if (!string.IsNullOrWhiteSpace(queryvoucher.RechargeNumber))
                 {
-
                     <MudCard Elevation="0" Class="w-50 ml-3 border-radius-3-px pa-4">
                         <MudGrid Class="ma-0 w-100">
 
@@ -147,27 +146,15 @@
 
                                 }
                             </MudItem>
-
-                            @*     else if (queryvoucher.HotCardFlag == "0")
-                {
-
-                } *@
-
                         </MudGrid>
-
-
-
-                    </MudCard>
+                </MudCard>
                 }
-                else
-                {
+                else if (queryvoucher.HotCardFlag == "0")
+                { 
+
                     <MudCard Class="w-100 d-flex d-flex flex-column px-6 py-8 align-items-center h-100" Elevation="0">
-
                         <MudText Class="f-20-px color-block f-25-px"> ສາມາດທຳການ Block Card ໄດ້ </MudText>
-
                         <MudButton Class="bg-block mt-5 border-radius-30-px h-55-px w-100 " OnClick="() => onBlockCardDialog()">  <MudIcon Icon="@Icons.Material.Filled.Close" Class="f-30-px" /> <MudText Class="f-20-px"> Block Card </MudText>  </MudButton>
-                     
-
                     </MudCard>
                 }
 
@@ -199,6 +186,10 @@
 
     .mud-input-helper-text.mud-input-error {
         font-size: 16px;
+    }
+
+    .mud-input.mud-input-outlined .mud-input-outlined-border{
+        border : 1px solid #e9ecef;
     }
 </style>
 
