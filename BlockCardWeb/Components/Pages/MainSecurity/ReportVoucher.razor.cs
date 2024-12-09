@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Components.Web;
 using System.Text.Json;
 using System.Linq;
 using MudBlazor;
+using BlockCardWeb.Components.Export;
 
 namespace BlockCardWeb.Components.Pages.MainSecurity
 {
@@ -258,18 +259,20 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
 
                 range.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
 
-                ws.Cells["A1:H2"].Merge = true;
-                ws.Cells["A1"].Value = "export block card";
+                ws.Cells["A1:J2"].Merge = true;
+                ws.Cells["A1"].Value = "Export Block Card";
                 ws.Cells["A1"].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.CenterContinuous;
+                ws.Cells["A1"].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
 
-                ws.Column(1).Width = 10;
+
+                ws.Column(1).Width = 20;
                 ws.Column(2).Width = 10;
-                ws.Column(3).Width = 10;
-                ws.Column(4).Width = 10;
-                ws.Column(5).Width = 10;
-                ws.Column(6).Width = 10;
+                ws.Column(3).Width = 22;
+                ws.Column(4).Width = 20;
+                ws.Column(5).Width = 15;
+                ws.Column(6).Width = 15;
                 ws.Column(7).Width = 10;
-                ws.Column(8).Width = 10;
+                ws.Column(8).Width = 22;
                 ws.Column(9).Width = 10;
                 ws.Column(10).Width = 10;
                 ws.Protection.IsProtected = false;
@@ -285,16 +288,20 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
             DateTime datestart = Convert.ToDateTime(voucherreportrequest.datestart);
             DateTime dateend = Convert.ToDateTime(voucherreportrequest.dateend);
 
+
             var date = datestart.ToString("dd/MM/yyyy") + " ຫາວັນທີ " + dateend.ToString("dd/MM/yyyy");
             if (blockcardmodel.Count > 0)
             {
-                if (blockcardmodel.Count > 500)
+                if (blockcardmodel.Count > 300)
                 {
-
+                    GenaratePdfModel exportpdf = new GenaratePdfModel();
+                    List<GenaratePdfModel> modelgenaratepdf = new List<GenaratePdfModel>();
+                    modelgenaratepdf = blockcardmodel.Select(x => new GenaratePdfModel() { bs_old = x.bs_old , facevalue = x.facevalue , expire_date = x.expire_date , bs_new = x.bs_new , msisdn = x.msisdn, supplier_name = x.supplier_name , province = x.province , remark = x.remark , create_time = x.create_time , create_user = x.create_user }).ToList();
+                    exportpdf.GenarateReportPdf(js , modelgenaratepdf);
                 }
                 else
                 {
-                    for (var i = 0; i < 50; i++)
+                    for (var i = 0; i < 30; i++)
                     {
                         foreach (var item in blockcardmodel)
                         {
@@ -302,12 +309,10 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
 
                         }
                     }
+                    await js.InvokeAsync<List<BlockCardReponse>>("printpdf", td);
                 }
-
-
             }
-
-            await js.InvokeAsync<List<BlockCardReponse>>("printpdf", td);
+ 
 
         }
 

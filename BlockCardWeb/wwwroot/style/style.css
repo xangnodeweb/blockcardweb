@@ -586,7 +586,7 @@
 }
 
 .bg-block {
-    background: #e46a76;
+    background: #e46a76 !important;
 }
 
 .bg-save {

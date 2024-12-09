@@ -90,6 +90,7 @@ namespace LibraryServices
                 await conn.OpenAsync();
 
                 var sql = "insert into loginuser (username , password, first_name , last_name , section , role , last_login , expire_password) values(@username , @password, @first_name, @last_name , @section, @role , @last_login , @expire);";
+          
                 await using (var cmd = new NpgsqlCommand(sql, conn))
                 {
                     cmd.Parameters.AddWithValue("username", request.username);
@@ -259,13 +260,14 @@ namespace LibraryServices
         {
             try
             {
-                var connstring = "Host=127.0.0.1;Username=postgres;Password=123456789;Database=user";
+                var connstring = "Host=172.28.17.243;Username=postgres;Password=12345678;Database=UVC_BlockCard";
+                //var connstring = "Host=127.0.0.1;Username=postgres;Password=123456789;Database=user";
 
 
                 await using var conn = new NpgsqlConnection(connstring);
                 await conn.OpenAsync();
                 var password = DateTime.Now.AddMonths(3).ToString("yyyy-MM-dd");
-                var sql = $"update loginuser  set password='{request.password}' , expire_password='{password}' where username='{request.username}' AND first_name='{request.first_name}'";
+                var sql = $"update UVC_LOGIN  set password='{request.password}' , expire_password='{password}' where username='{request.username}' AND first_name='{request.first_name}'";
                 await using (var cmd = new NpgsqlCommand(sql, conn))
                 {
                     //cmd.Parameters.AddWithValue("password", request.password);
@@ -392,7 +394,7 @@ namespace LibraryServices
             {
                 UserModel usermodel = new UserModel();
 
-                var sql = $"select * from loginuser where username='{request.username}'";
+                var sql = $"select * from UVC_LOGIN where username='{request.username}'";
                 var user = await getAsync(sql);
 
                 if (user.result.Count == 0)
@@ -412,7 +414,7 @@ namespace LibraryServices
                     {
                         if (request.oldpassword != password)
                         {
-                            return await usercheckresponse(false, "OLD_PASSWORD_INCURRENT", 1, null);
+                            return await usercheckresponse(false, "OLD_PASSWORD_INCURRENT", 2, null);
                         }
                         var passwordbyte = Encrypt(request.newpassword);
                         if (passwordbyte != null)
@@ -423,6 +425,7 @@ namespace LibraryServices
                             {
                                 return await usercheckresponse(true, "UPDATE_PASSWORD_SUCESS", 0, usermodel);
                             }
+                  
                         }
                     }
                 }

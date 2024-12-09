@@ -13,6 +13,7 @@ namespace LibraryServices.Model
         public string? lastname { get; set; }   
         public string? role { get; set; }   
         public string? section { get; set; }   
+        
 
     }
 }

@@ -10,7 +10,6 @@ using iTextSharp.text;
 using Microsoft.AspNetCore.Http.Headers;
 using NPOI.SS.UserModel;
 using static System.Runtime.InteropServices.JavaScript.JSType;
-using iTextSharp.text.pdf.qrcode;
 using static iTextSharp.text.pdf.PdfSigGenericPkcs;
 using System.Net.Http.Headers;
 
@@ -89,7 +88,7 @@ namespace BlockCardWeb.Components.Export
             }
         }
         public async Task<DefaultReponse<QueryVoucherResponse>> Queryvoucher(string bs)
-        {
+         {
             DefaultReponse<QueryVoucherResponse> response = new DefaultReponse<QueryVoucherResponse>();
 
             try
@@ -117,92 +116,112 @@ namespace BlockCardWeb.Components.Export
 
                 if (dataresult != null)
                 {
-                    if (dataresult["ResultCode"] != null)
+                    if (dataresult["ResultCode"].ToString() == "0")
                     {
-                        queryvouchermodel.ResultCode = dataresult["ResultCode"].ToString();
+                        if (dataresult["ResultCode"] != null)
+                        {
+                            queryvouchermodel.ResultCode = dataresult["ResultCode"].ToString();
+                        }
+                        else
+                        {
+                            queryvouchermodel.ResultCode = "";
+                        }
+
+                        if (dataresult["ResultDesc"] != null)
+                        {
+                            queryvouchermodel.ResultDesc = dataresult["ResultDesc"].ToString();
+                        }
+                        else
+                        {
+                            queryvouchermodel.ResultDesc = "";
+                        }
+
+                        if (dataresult["SerialNo"] != null)
+                        {
+                            queryvouchermodel.SerialNo = dataresult["SerialNo"].ToString();
+                        }
+                        else
+                        {
+                            queryvouchermodel.SerialNo = "";
+                        }
+                        if (dataresult["FaceValue"] != null)
+                        {
+                            queryvouchermodel.FaceValue = dataresult["FaceValue"].ToString();
+                        }
+                        else
+                        {
+                            queryvouchermodel.FaceValue = "";
+                        }
+
+                        if (dataresult["HotCardFlag"] != null)
+                        {
+                            queryvouchermodel.HotCardFlag = dataresult["HotCardFlag"].ToString();
+                        }
+                        else
+                        {
+                            queryvouchermodel.HotCardFlag = "";
+                        }
+
+                        if (dataresult["RechargeNumber"] != null)
+                        {
+                            queryvouchermodel.RechargeNumber = dataresult["RechargeNumber"].ToString();
+                        }
+                        else
+                        {
+                            queryvouchermodel.RechargeNumber = "";
+                        }
+
+                        if (dataresult["CardStartDate"] != null)
+                        {
+                            queryvouchermodel.CardStartDate = dataresult["CardStartDate"].ToString();
+                        }
+                        else
+                        {
+                            queryvouchermodel.CardStartDate = "";
+                        }
+
+                        if (dataresult["CardStopDate"] != null)
+                        {
+                            queryvouchermodel.CardStopDate = dataresult["CardStopDate"].ToString();
+                        }
+                        else
+                        {
+                            queryvouchermodel.CardStopDate = "";
+                        }
+                        if (dataresult["HotCardFlagDesc"] != null)
+                        {
+                            queryvouchermodel.HotCardFlagDesc = dataresult["HotCardFlagDesc"].ToString();
+                        }
+                        else
+                        {
+                            queryvouchermodel.HotCardFlagDesc = "";
+                        }
+                        if (dataresult["TradeTime"] != null)
+                        {
+                            queryvouchermodel.TradeTime = dataresult["TradeTime"].ToString();
+                        }
+                        else
+                        {
+                            queryvouchermodel.TradeTime = "";
+                        }
+
+                    }
+                    else if(dataresult["ResultCode"].ToString() == "107010623")
+                    {
+                        response.code = 2;
+                        response.message = "NOT_FOUND_VOUCHER_CARD";
+                        return response;
                     }
                     else
                     {
-                        queryvouchermodel.ResultCode = "";
+                        response.code = 1;
+
+                   
+                        response.code = int.Parse(dataresult["ResultCode"].ToString()); 
+                        response.message = dataresult["ResultDesc"].ToString();
+                        return response;
                     }
 
-                    if (dataresult["ResultDesc"] != null)
-                    {
-                        queryvouchermodel.ResultDesc = dataresult["ResultDesc"].ToString();
-                    }
-                    else
-                    {
-                        queryvouchermodel.ResultDesc = "";
-                    }
-
-                    if (dataresult["SerialNo"] != null)
-                    {
-                        queryvouchermodel.SerialNo = dataresult["SerialNo"].ToString();
-                    }
-                    else
-                    {
-                        queryvouchermodel.SerialNo = "";
-                    }
-                    if (dataresult["FaceValue"] != null)
-                    {
-                        queryvouchermodel.FaceValue = dataresult["FaceValue"].ToString();
-                    }
-                    else
-                    {
-                        queryvouchermodel.FaceValue = "";
-                    }
-
-                    if (dataresult["HotCardFlag"] != null)
-                    {
-                        queryvouchermodel.HotCardFlag = dataresult["HotCardFlag"].ToString();
-                    }
-                    else
-                    {
-                        queryvouchermodel.HotCardFlag = "";
-                    }
-
-                    if (dataresult["RechargeNumber"] != null)
-                    {
-                        queryvouchermodel.RechargeNumber = dataresult["RechargeNumber"].ToString();
-                    }
-                    else
-                    {
-                        queryvouchermodel.RechargeNumber = "";
-                    }
-
-                    if (dataresult["CardStartDate"] != null)
-                    {
-                        queryvouchermodel.CardStartDate = dataresult["CardStartDate"].ToString();
-                    }
-                    else
-                    {
-                        queryvouchermodel.CardStartDate = "";
-                    }
-
-                    if (dataresult["CardStopDate"] != null)
-                    {
-                        queryvouchermodel.CardStopDate = dataresult["CardStopDate"].ToString();
-                    }
-                    else
-                    {
-                        queryvouchermodel.CardStopDate = "";
-                    }
-                    if (dataresult["HotCardFlagDesc"] != null)
-                    {
-                        queryvouchermodel.HotCardFlagDesc = dataresult["HotCardFlagDesc"].ToString();
-                    }
-                    else
-                    {
-                        queryvouchermodel.HotCardFlagDesc = "";
-                    }
-                    if (dataresult["TradeTime"] != null)
-                    {
-                        queryvouchermodel.TradeTime = dataresult["TradeTime"].ToString();
-                    }
-                    else
-                    {
-                        queryvouchermodel.TradeTime = "";
-                    }
                 }
                 response.result = queryvouchermodel;
                 response.success = true;
@@ -214,6 +233,7 @@ namespace BlockCardWeb.Components.Export
             {
                 Console.WriteLine(ex);
                 response.code = 1;
+                response.message = ex.Message;
                 return response;
             }
         }

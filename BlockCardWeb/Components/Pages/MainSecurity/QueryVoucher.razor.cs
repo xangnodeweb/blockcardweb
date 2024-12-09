@@ -12,6 +12,8 @@ using System.Diagnostics;
 using Castle.Facilities.TypedFactory.Internal;
 using LibraryServices;
 using BlockCardWeb.Components.Export;
+using Castle.MicroKernel.Util;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace BlockCardWeb.Components.Pages.MainSecurity
 {
@@ -42,6 +44,7 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
 
                 loading = true;
                 StateHasChanged();
+
                 if (string.IsNullOrWhiteSpace(bs))
                 {
                     loading = false;
@@ -51,163 +54,191 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
                     StateHasChanged();
                     return;
                 }
+
+                var result = await userService.Queryvoucher(bs);
+
+                if (result.success == true && result.code == 0)
+                {
+                    queryvoucher = result.result;
+                    btnstatus = true;
+                }
+                else
+                {
+                    if (result.success == false && result.code == 2)
+                    {
+                        queryvoucher = new QueryVoucherResponse();
+                        btnstatus = false;
+                        DialogParameters dialog = new DialogParameters() { ["contentstring"] = $"ບັດບໍ່ມີໃນລະບົບ" };
+                        Dialog.Show<DialogVoucher>("custom dialog", dialog, new MudBlazor.DialogOptions { NoHeader = true });
+                    }
+                    else
+                    {
+                        queryvoucher = new QueryVoucherResponse();
+                        btnstatus = false;
+                        loading= false;
+                        var message = result.code != 0 ? result.message : "" ;
+                        DialogParameters dialog = new DialogParameters() { ["contentstring"] = $"{message}" };
+                        Dialog.Show<DialogVoucher>("custom dialog", dialog, new MudBlazor.DialogOptions { NoHeader = true });
+                    }
+                }
+                loading = false;
+                StateHasChanged();
+
+                return;
                 var bsquery = "";
                 var faceValue = "";
                 var expireDate = "";
                 //var bs = "/UVC/BlockCard/?bs=" + bsquery + "&faceValue=" + faceValue + "&expireDate=" + expireDate;
                 //srv_uvc srvu = new srv_uvc();
                 //var res = srvu.Query_BS(bs);
-                XmlDocument docxml = new XmlDocument();
-                var bodyxml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" + "<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">" + " <soap12:Body>\r\n    <qryVoucher xmlns=\"http://tempuri.org/\">" + $"<BS>{bs}</BS>" + "  </qryVoucher>  </soap12:Body></soap12:Envelope>";
-
-
-                HttpClient httpclient = new HttpClient();
-                HttpContent content = new StringContent(bodyxml, Encoding.UTF8, "text/xml");
-                httpclient.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/soap+xml;charset=utf-8");
-                HttpResponseMessage response = await httpclient.PostAsync(url, content);
-                var model = response.Content.ReadAsStringAsync().Result;
-
-                docxml.LoadXml(model);
-                var jsontext = JsonConvert.SerializeXmlNode(docxml);
-                var datajson = JObject.Parse(jsontext);
-                var data = datajson["soap:Envelope"]["soap:Body"]["qryVoucherResponse"];
-                var dataresult = data != null ? data["qryVoucherResult"] : null;
-
-                if (dataresult != null)
-                {
-                    if (dataresult["ResultCode"].ToString() == "0")
-                    {
-
-
-                        if (dataresult["ResultCode"] != null)
-                        {
-                            queryvoucher.ResultCode = dataresult["ResultCode"].ToString();
-                        }
-                        else
-                        {
-                            queryvoucher.ResultCode = "";
-                        }
-
-                        if (dataresult["ResultDesc"] != null)
-                        {
-                            queryvoucher.ResultDesc = dataresult["ResultDesc"].ToString();
-                        }
-                        else
-                        {
-                            queryvoucher.ResultDesc = "";
-                        }
 
 
 
+                //XmlDocument docxml = new XmlDocument();
+                //var bodyxml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" + "<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">" + " <soap12:Body>\r\n    <qryVoucher xmlns=\"http://tempuri.org/\">" + $"<BS>{bs}</BS>" + "  </qryVoucher>  </soap12:Body></soap12:Envelope>";
 
-                        if (dataresult["SerialNo"] != null)
-                        {
-                            queryvoucher.SerialNo = dataresult["SerialNo"].ToString();
-                        }
-                        else
-                        {
-                            queryvoucher.SerialNo = "";
-                        }
+                //HttpClient httpclient = new HttpClient();
+                //HttpContent content = new StringContent(bodyxml, Encoding.UTF8, "text/xml");
+                //httpclient.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/soap+xml;charset=utf-8");
+                //HttpResponseMessage response = await httpclient.PostAsync(url, content);
+                //var model = response.Content.ReadAsStringAsync().Result;
 
-                        if (dataresult["FaceValue"] != null)
-                        {
-                            queryvoucher.FaceValue = dataresult["FaceValue"].ToString();
-                        }
-                        else
-                        {
-                            queryvoucher.FaceValue = "";
-                        }
+                //docxml.LoadXml(model);
+                //var jsontext = JsonConvert.SerializeXmlNode(docxml);
+                //var datajson = JObject.Parse(jsontext);
+                //var data = datajson["soap:Envelope"]["soap:Body"]["qryVoucherResponse"];
+                //var dataresult = data != null ? data["qryVoucherResult"] : null;
 
-                        if (dataresult["HotCardFlag"] != null)
-                        {
-                            queryvoucher.HotCardFlag = dataresult["HotCardFlag"].ToString();
-                        }
-                        else
-                        {
-                            queryvoucher.HotCardFlag = "";
-                        }
+                //if (dataresult != null)
+                //{
+                //    if (dataresult["ResultCode"].ToString() == "0")
+                //    {
 
 
+                //        if (dataresult["ResultCode"] != null)
+                //        {
+                //            queryvoucher.ResultCode = dataresult["ResultCode"].ToString();
+                //        }
+                //        else
+                //        {
+                //            queryvoucher.ResultCode = "";
+                //        }
 
-                        if (dataresult["RechargeNumber"] != null)
-                        {
-                            queryvoucher.RechargeNumber = dataresult["RechargeNumber"].ToString();
-                        }
-                        else
-                        {
-                            queryvoucher.RechargeNumber = "";
-                        }
-
-
-
-                        if (dataresult["CardStartDate"] != null)
-                        {
-                            queryvoucher.CardStartDate = dataresult["CardStartDate"].ToString();
-                        }
-                        else
-                        {
-                            queryvoucher.CardStartDate = "";
-                        }
-
-                        if (dataresult["CardStopDate"] != null)
-                        {
-                            queryvoucher.CardStopDate = dataresult["CardStopDate"].ToString();
-                        }
-                        else
-                        {
-                            queryvoucher.CardStopDate = "";
-                        }
+                //        if (dataresult["ResultDesc"] != null)
+                //        {
+                //            queryvoucher.ResultDesc = dataresult["ResultDesc"].ToString();
+                //        }
+                //        else
+                //        {
+                //            queryvoucher.ResultDesc = "";
+                //        }
 
 
 
-                        if (dataresult["HotCardFlagDesc"] != null)
-                        {
-                            queryvoucher.HotCardFlagDesc = dataresult["HotCardFlagDesc"].ToString();
-                        }
-                        else
-                        {
-                            queryvoucher.HotCardFlagDesc = "";
-                        }
 
-                        if (dataresult["TradeTime"] != null)
-                        {
-                            queryvoucher.TradeTime = dataresult["TradeTime"].ToString();
-                        }
-                        else
-                        {
-                            queryvoucher.TradeTime = "";
-                        }
+                //        if (dataresult["SerialNo"] != null)
+                //        {
+                //            queryvoucher.SerialNo = dataresult["SerialNo"].ToString();
+                //        }
+                //        else
+                //        {
+                //            queryvoucher.SerialNo = "";
+                //        }
 
-                        btnstatus = true;
-                    }
-                    else if (dataresult["ResultCode"].ToString() == "107010623")
-                    {
-                        btnstatus = false;
-                        DialogParameters dialog = new DialogParameters() { ["contentstring"] = $"ບັດບໍ່ມີໃນລະບົບ" };
-                        Dialog.Show<DialogVoucher>("custom dialog", dialog, new MudBlazor.DialogOptions { NoHeader = true });
+                //        if (dataresult["FaceValue"] != null)
+                //        {
+                //            queryvoucher.FaceValue = dataresult["FaceValue"].ToString();
+                //        }
+                //        else
+                //        {
+                //            queryvoucher.FaceValue = "";
+                //        }
 
-                    }
-                    else
-                    {
-                        queryvoucher = new QueryVoucherResponse();
-                        btnstatus = false;
-                        var message = dataresult["ResultDesc"].ToString() != null ? dataresult["ResultDesc"].ToString() : "";
-
-                        DialogParameters dialog = new DialogParameters() { ["contentstring"] = $"{message}" };
-                        Dialog.Show<DialogVoucher>("custom dialog", dialog, new MudBlazor.DialogOptions { NoHeader = true });
-
-                    }
+                //        if (dataresult["HotCardFlag"] != null)
+                //        {
+                //            queryvoucher.HotCardFlag = dataresult["HotCardFlag"].ToString();
+                //        }
+                //        else
+                //        {
+                //            queryvoucher.HotCardFlag = "";
+                //        }
 
 
-                }
-                else
-                {
-                    btnstatus = false;
-                    queryvoucher = new QueryVoucherResponse();
-                    DialogParameters dialog = new DialogParameters() { ["contentstring"] = "" };
-                    Dialog.Show<DialogVoucher>("custom dialog", dialog, new MudBlazor.DialogOptions { NoHeader = true });
-                }
-                await InvokeAsync(StateHasChanged);
+
+                //        if (dataresult["RechargeNumber"] != null)
+                //        {
+                //            queryvoucher.RechargeNumber = dataresult["RechargeNumber"].ToString();
+                //        }
+                //        else
+                //        {
+                //            queryvoucher.RechargeNumber = "";
+                //        }
+
+
+
+                //        if (dataresult["CardStartDate"] != null)
+                //        {
+                //            queryvoucher.CardStartDate = dataresult["CardStartDate"].ToString();
+                //        }
+                //        else
+                //        {
+                //            queryvoucher.CardStartDate = "";
+                //        }
+
+                //        if (dataresult["CardStopDate"] != null)
+                //        {
+                //            queryvoucher.CardStopDate = dataresult["CardStopDate"].ToString();
+                //        }
+                //        else
+                //        {
+                //            queryvoucher.CardStopDate = "";
+                //        }
+
+
+
+                //        if (dataresult["HotCardFlagDesc"] != null)
+                //        {
+                //            queryvoucher.HotCardFlagDesc = dataresult["HotCardFlagDesc"].ToString();
+                //        }
+                //        else
+                //        {
+                //            queryvoucher.HotCardFlagDesc = "";
+                //        }
+
+                //        if (dataresult["TradeTime"] != null)
+                //        {
+                //            queryvoucher.TradeTime = dataresult["TradeTime"].ToString();
+                //        }
+                //        else
+                //        {
+                //            queryvoucher.TradeTime = "";
+                //        }
+
+                //        btnstatus = true;
+                //    }
+                //    else if (dataresult["ResultCode"].ToString() == "107010623")
+                //    {
+                //        btnstatus = false;
+                //        DialogParameters dialog = new DialogParameters() { ["contentstring"] = $"ບັດບໍ່ມີໃນລະບົບ" };
+                //        Dialog.Show<DialogVoucher>("custom dialog", dialog, new MudBlazor.DialogOptions { NoHeader = true });
+                //    }
+                //    else
+                //    {
+                //        queryvoucher = new QueryVoucherResponse();
+                //        btnstatus = false;
+                //        var message = dataresult["ResultDesc"].ToString() != null ? dataresult["ResultDesc"].ToString() : "";
+                //        DialogParameters dialog = new DialogParameters() { ["contentstring"] = $"{message}" };
+                //        Dialog.Show<DialogVoucher>("custom dialog", dialog, new MudBlazor.DialogOptions { NoHeader = true });
+                //    }
+                //}
+                //else
+                //{
+                //    btnstatus = false;
+                //    queryvoucher = new QueryVoucherResponse();
+                //    DialogParameters dialog = new DialogParameters() { ["contentstring"] = "ບໍ່ສາມາດຄົ້ນຫາເລກບັດໄດ້" };
+                //    Dialog.Show<DialogVoucher>("custom dialog", dialog, new MudBlazor.DialogOptions { NoHeader = true });
+                //}
+                //await InvokeAsync(StateHasChanged);
             }
             catch (Exception ex)
             {
@@ -264,6 +295,15 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
 
             }
             StateHasChanged();
+        }
+        public async Task OnEnterQuery(KeyboardEventArgs e)
+        {
+
+            if (e.Key == "Enter")
+            {
+        
+                QueryVoucherBs();
+            }
         }
 
         public async Task<string> checkflied(JToken value)

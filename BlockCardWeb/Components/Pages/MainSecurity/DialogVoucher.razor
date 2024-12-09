@@ -4,6 +4,7 @@
         <MudPaper Class="d-flex flex-column align-items-center justify-content-between  pt-8" Elevation="0">
             <MudGrid Class="ma-0 w-100">
                 <MudItem xs="12" Class="pa-0 text-center">
+                    
                     @if (optionicon == 1)
                     {
                         <MudIcon Icon="@Icons.Material.Outlined.CheckCircle" Class="f-100-px m-auto color-succes" />
@@ -30,11 +31,11 @@
 
 <style>
 
-    svg.mud-icon-root.mud-svg-icon {
+    svg.mud-icon-root.mud-svg-icon.color-red {
         fill: #F44336;
     }
 
-        svg.mud-icon-root.mud-svg-icon color-succes {
+        svg.mud-icon-root.mud-svg-icon.color-succes {
         fill: #00E676;
     }
 </style>
