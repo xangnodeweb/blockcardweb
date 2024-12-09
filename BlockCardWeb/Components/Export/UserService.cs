@@ -242,28 +242,32 @@ namespace BlockCardWeb.Components.Export
             DefaultReponse<BlockCardVoucherrequest> response = new DefaultReponse<BlockCardVoucherrequest>();
             try
             {
-                var connstring = "Host=172.28.17.243;Username=postgres;Password=12345678;Database=UVC_BlockCard";
+                //var connstring = "Host=172.28.17.243;Username=postgres;Password=12345678;Database=UVC_BlockCard";
+                var connstring = "Host=127.0.0.1;Username=postgres;Password=123456789;Database=user";
                 await using var conn = new NpgsqlConnection(connstring);
 
                 await conn.OpenAsync();
 
-                var sql = "insert into uvc_block_card" +
-                    " (bs_old, facevalue , expire_date , bs_new , msisdn , supplier_name , province , create_time , remark , create_user ) " +
-                    "values(@bs_old , @facevalue , @expire_date , @bs_new , @msisdn , @supplier_name , @province , @create_time , @remark , @create_user )";
+                //var sql = "insert into uvc_block_card" +
+                //    " (bs_old, facevalue , expire_date , bs_new , msisdn , supplier_name , province , create_time , remark , create_user ) " +
+                //    "values(@bs_old , @facevalue , @expire_date , @bs_new , @msisdn , @supplier_name , @province , @create_time , @remark , @create_user )";
 
+                var sql = "insert into uvc_block_card" +
+               " (bs_old, facevalue , expire_date , bs_new , msisdn , supplier_name , province , create_time , remark , create_user ) " +
+               $"values( '{request.SerialNo}' ,'{request.FaceValue}' ,'{request.CardStopDate}' , '{request.bs_new}', '{request.msisdn}' , '{request.suppliername}', '{request.provincename}' , '{request.createtime}' ,'{request.remark}' , '{request.createuser}' )";
                 await using (var cmd = new NpgsqlCommand(sql, conn))
                 {
 
-                    cmd.Parameters.AddWithValue("bs_old", request.SerialNo);
-                    cmd.Parameters.AddWithValue("facevalue", request.SerialNo);
-                    cmd.Parameters.AddWithValue("expire_date", request.SerialNo);
-                    cmd.Parameters.AddWithValue("bs_new", request.SerialNo);
-                    cmd.Parameters.AddWithValue("msisdn", request.SerialNo);
-                    cmd.Parameters.AddWithValue("supplier_name", request.SerialNo);
-                    cmd.Parameters.AddWithValue("province", request.SerialNo);
-                    cmd.Parameters.AddWithValue("create_time", request.SerialNo);
-                    cmd.Parameters.AddWithValue("remark", request.SerialNo);
-                    cmd.Parameters.AddWithValue("create_user", request.SerialNo);
+                    //cmd.Parameters.AddWithValue("bs_old", request.SerialNo);
+                    //cmd.Parameters.AddWithValue("facevalue", request.FaceValue);
+                    //cmd.Parameters.AddWithValue("expire_date", request.CardStopDate);
+                    //cmd.Parameters.AddWithValue("bs_new", request.bs_new);
+                    //cmd.Parameters.AddWithValue("msisdn", request.msisdn);
+                    //cmd.Parameters.AddWithValue("supplier_name", request.suppliername);
+                    //cmd.Parameters.AddWithValue("province", request.provincename);
+                    //cmd.Parameters.AddWithValue("create_time", request.createtime);
+                    //cmd.Parameters.AddWithValue("remark", request.remark);
+                    //cmd.Parameters.AddWithValue("create_user", request.createuser);
                     await cmd.ExecuteNonQueryAsync();
                 }
                 return response;

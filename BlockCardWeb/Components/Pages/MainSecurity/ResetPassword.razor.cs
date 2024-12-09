@@ -16,7 +16,11 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
         [Inject] public NavigationManager nav { get; set; }
         public UserSqlService userservice = new UserSqlService();
         public UserRerefreshPassword UserRefreshModel = new UserRerefreshPassword();
+        public MudTextField<string> refoldpassword = new MudTextField<string>();
+        public MudTextField<string> refnewpassword = new MudTextField<string>();
+        public MudTextField<string> refconfirmpassword = new MudTextField<string>();
         public string token { get; set; } = "";
+
         protected override async Task OnAfterRenderAsync(bool firstload)
         {
 
@@ -54,40 +58,49 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
 
             if (string.IsNullOrWhiteSpace(UserRefreshModel.oldpassword))
             {
+                refoldpassword.Error = true;
+                refoldpassword.ErrorText = "ກະລຸນາປ້ອນລະຫັດຜ່ານ";
+                StateHasChanged();
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(UserRefreshModel.newpassword))
             {
+
+                refnewpassword.Error = true;
+                refnewpassword.ErrorText = "ກະລຸນາປ້ອນລະຫັດຜ່ານໃໝ່";
+                StateHasChanged();
                 return;
             }
 
 
             if (string.IsNullOrWhiteSpace(UserRefreshModel.confirmpassword))
             {
+                refconfirmpassword.Error = true;
+                refconfirmpassword.ErrorText = "ກະລຸນາປ້ອນລະຫັດຢືນຢັນ";
                 return;
             }
 
             if (UserRefreshModel.oldpassword == UserRefreshModel.newpassword)
             {
-                DialogParameters dialogparameter = new DialogParameters() { ["contentstring"] = "ກະລຸນາປ້ອນລະຫັດໃໝ່ ຕ່າງກັບລະຫັດຜ່ານເກົ່າທີ່ທ່ານໃຊ້", ["optionicon"] = 1 };
+                DialogParameters dialogparameter = new DialogParameters() { ["contentstring"] = "ກະລຸນາປ້ອນລະຫັດໃໝ່ ຕ່າງກັບລະຫັດຜ່ານເກົ່າທີ່ທ່ານໃຊ້" };
                 DialogResult dialogresult = await Dialog.Show<DialogVoucher>("dialog option", dialogparameter, new DialogOptions() { NoHeader = true }).Result;
                 return;
             }
 
             if (UserRefreshModel.newpassword != UserRefreshModel.confirmpassword)
             {
-                DialogParameters dialogparameter = new DialogParameters() { ["contentstring"] = "ກະລຸນາປ້ອນລະຫັດໃໝ່ ແລະ ລະຫັດຢືນຢັນໃຫ້ຕົງກັນ", ["optionicon"] = 1 };
+                DialogParameters dialogparameter = new DialogParameters() { ["contentstring"] = "ກະລຸນາປ້ອນລະຫັດໃໝ່ ແລະ ລະຫັດຢືນຢັນໃຫ້ຕົງກັນ", ["optionicon"] = 0 };
                 DialogResult dialogresult = await Dialog.Show<DialogVoucher>("dialog option", dialogparameter, new DialogOptions() { NoHeader = true }).Result;
 
                 return;
             }
-            if (UserRefreshModel.oldpassword == UserRefreshModel.confirmpassword)
-            {
-                DialogParameters dialogparameter = new DialogParameters() { ["contentstring"] = "ກະລຸນາຢືນຢັນລະຫັດໃໝ່ ໃຫ້ຖືກກັບລະຫັດຜ່ານທີ່ຕ້ອງການປ່ຽນ", ["optionicon"] = 1 };
-                DialogResult dialogresult = await Dialog.Show<DialogVoucher>("dialog option", dialogparameter, new DialogOptions() { NoHeader = true }).Result;
-                return;
-            }
+            //if (UserRefreshModel.oldpassword == UserRefreshModel.confirmpassword)
+            //{
+            //    DialogParameters dialogparameter = new DialogParameters() { ["contentstring"] = "ກະລຸນາຢືນຢັນລະຫັດໃໝ່ ໃຫ້ຖືກກັບລະຫັດຜ່ານທີ່ຕ້ອງການປ່ຽນ", ["optionicon"] = 0 };
+            //    DialogResult dialogresult = await Dialog.Show<DialogVoucher>("dialog option", dialogparameter, new DialogOptions() { NoHeader = true }).Result;
+            //    return;
+            //}
 
 
 

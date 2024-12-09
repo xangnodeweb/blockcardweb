@@ -240,9 +240,12 @@ namespace BlockCardWeb.Components.Pages.MainSecurity
                 var serialNo = "";
                 //await js.InvokeAsync<string>("sendblock");
 
+                // field expire_time format yyyy-MM-dd convert substring yyyy-MM-dd
                 var resultblockcardlock = await userService.ModifyVoucher(blockcardrequest.bs_new);
                 if (resultblockcardlock.success == true)
                 {
+                    blockcardrequest.CardStopDate = Convert.ToDouble(queryvouchermodel.CardStopDate.Substring(0,8)).ToString("####-##-##");
+                    await userService.SaveBlockCardVoucher(blockcardrequest);
                     Dialog.Close("1"); // Close == 1 dialog block success
                 }
                 else
